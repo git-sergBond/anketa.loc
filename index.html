@@ -8,17 +8,43 @@
 </head>
 
 <body>
-    
-    <!-- ТВОЯ РАЗМЕТКА -->
-    <div id=print_data_from_db>
-        <p v-for="el in respons_db">
-            <span v-for="(value, key) in el"> 
-                {{ key }}={{ value}} 
-            </span>
-        </p>
+    <!--меню-->
+    <div id="main-component">
+        <div v-show="curentView=='menu'">
+            <button @click="SwitchView('cliker1')">cliker1</button>
+            <button @click="SwitchView('cliker2')">cliker2</button>
+            <button @click="SwitchView('authorizationRead')">authorizationRead</button>
+        </div>
+        <component :is=curentView transition="switch" @exit="SwitchView"></component>
     </div>
+    
+    <!--анкетирование-->
+    <template id='cliker1-tmp'>
+        <button v-on:click="count++">анкетирование {{ count }} times.</button>
+    </template>
+    
+    <!--конфг тестов-->
+    <template id='cliker2-tmp'>
+        <div>
+            <button v-on:click="count++">конфг тестов {{ count }} times.</button>
+            <button @click=exit>exit</button>
+        </div>
+    </template>
 
-    <script src="main.js"></script>
+    <!-- считать с БД -->
+    <template id='authorizationRead-tmp'>
+        <div>
+            <button @click='load'>load</button>
+            <button @click='exit'>exit</button>
+            <p v-for="e in respons_db">
+                <span v-for="(value, key) in e">
+                    {{ key }}={{ value}}
+                </span>
+            </p>
+        </div>
+    </template>
+
+    <script type="text/javascript" src="main.js"></script>
 </body>
 
 </html>
