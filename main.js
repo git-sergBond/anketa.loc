@@ -1,5 +1,6 @@
 /* ----------
  * ТИПА API К СЕРВЕРУ
+ * ----------
  */
 function getDataFromDB(sqlquery){
     var request = new XMLHttpRequest();
