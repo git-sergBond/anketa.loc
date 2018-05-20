@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Тестовая страничка SPA</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="vue.js"></script>
+</head>
+
+<body>
+    
+    <!-- ТВОЯ РАЗМЕТКА -->
+    <div id=print_data_from_db>
+        <p v-for="el in respons_db">
+            <span v-for="(value, key) in el"> 
+                {{ key }}={{ value}} 
+            </span>
+        </p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
