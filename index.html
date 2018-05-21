@@ -4,26 +4,74 @@
 <head>
     <title>Тестовая страничка SPA</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="main.css">
     <script type="text/javascript" src="vue.js"></script>
 </head>
 
 <body>
-    <!--меню-->
+    <!--Главный компонент -  Главное меню-->
     <div id="main-component">
-        <div></div>
-        
-        <component :is=curentView transition="switch" @exit="SwitchView"></component>
+        <div v-show="curentView == 'MainMenu'">
+            <div class="avtorizationBar">
+                <div>
+                    <a>Войти</a>
+                    <br>
+                    <label>
+                        <label>Логин</label>
+                        <input size="8" v-model='login'>
+                        <br>
+                        <label>Пароль</label>
+                        <input size="8" v-model='pass'>
+                        <br>
+                        <button>Войти</button>
+                        <button>Закрыть</button>
+                </div>
+                <div>
+                    <a>Регистрация</a>
+                    <br>
+                    <label>Логин</label>
+                    <input size="8" v-model='login'>
+                    <br>
+                    <label>Пароль</label>
+                    <input type="password" size="8" v-model='pass'>
+                    <br>
+                    <label>Группа</label>
+                    <input size="8" v-model='group'>
+                    <br>
+                    <label>Работа</label>
+                    <select id="phone" name="phone">
+                        <option value="iphone 6s">Ученик</option>
+                        <option value="lumia 950">Социолог</option>
+                    </select>
+                    <br>
+                    <button>Зарегистрироваться</button>
+                    <button>Закрыть</button>
+                </div>
+                <div>
+                    <span>login</span>
+                    <button>Выйти из аккаунта</button>
+                </div>
+            </div>
+            <div class="mainMenu">
+                <div>
+                    <p>.:Пункты сменю:.</p>
+                </div>
+                <div>
+                    <button @click="curentView='cliker1'">Анкетирование</button>
+                    <button @click="curentView='cliker2'">Эксперт</button>
+                    <button @click="curentView='authorizationRead'">Соцтолог</button>
+                </div>
+    
+                <div>
+                    <button @click="curentView='cliker1'">Конф. тестов</button>
+                    <button @click="curentView='cliker2'">Конф. правил</button>
+                    <button @click="curentView='authorizationRead'">Дефазификация</button>
+                </div>
+            </div>
+        </div>
+        <component v-if="curentView != 'MainMenu'" :is=curentView transition="switch" @exit="SwitchView"></component>
     </div>
     
-    <!--меню-->
-    <template id='MainMenu-tmp'>
-        <div>
-            <button @click="go('cliker1')">cliker1</button>
-            <button @click="go('cliker2')">cliker2</button>
-            <button @click="go('authorizationRead')">authorizationRead</button>
-        </div>
-    </template>
-
     <!--анкетирование-->
     <template id='cliker1-tmp'>
         <button v-on:click="count++">анкетирование {{ count }} times.</button>

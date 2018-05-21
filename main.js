@@ -24,34 +24,24 @@ function getDataFromDB(sqlquery){//делает sql запрос к сервер
  * SPA НА VUE
  * ----------
  */
-new Vue({//ГЛАВНЫЙ компонент
+new Vue({//ГЛАВНЫЙ компонент - Главное меню
     el: '#main-component',
 	data:{
-		curentView: 'NULL'
+
+        login: 'none',
+        pass: 'none',
+        group: 'none',
+        typePers: 'none',
+        checkAutorization: false,
+
+		curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 	},
 	methods:{
 		SwitchView: function(view){
 			this.curentView = view;
 		}
-    },
-    mounted: function(){
-        this.curentView = 'MainMenu';
     }
 });
-
-Vue.component('MainMenu',{
-    data: function () {
-        return {
-          count: 0
-        }
-    },
-    methods:{
-		go: function(arg){
-			this.$emit('exit',arg);
-		}
-	},
-    template: '#MainMenu-tmp'
-})
 
 //анкетирование
 Vue.component('cliker1', {
