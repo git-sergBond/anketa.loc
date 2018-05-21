@@ -9,12 +9,13 @@ if(mysqli_connect_errno()){
  exit();
 }
 
-$data = array(); 
+$data = -1; 
 $result = mysqli_query($link,$sql); 
-while($row = mysqli_fetch_assoc($result)){
-    $data[] = $row;
-}
 
+if(mysqli_affected_rows($link) != -1){
+    $data =  mysqli_insert_id($link);
+}
+    
 mysqli_close($link);
-echo json_encode($data); // и отдаём как json
+echo $data; 
 ?>
