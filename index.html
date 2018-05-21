@@ -39,17 +39,19 @@
                     <input size="8" v-model='group'>
                     <br>
                     <label>Работа</label>
-                    <select id="phone" name="phone">
-                        <option value="iphone 6s">Ученик</option>
-                        <option value="lumia 950">Социолог</option>
+                    <select v-model='typePers'>
+                        <option disabled value="-1">Выберите один из вариантов</option>
+                        <option value="1">Ученик</option>
+                        <option value="2">Социолог</option>
+                        <option value="3">Эксперт</option>
                     </select>
                     <br>
-                    <button>Зарегистрироваться</button>
+                    <button @click=SignUp >Зарегистрироваться</button>
                     <button>Закрыть</button>
                 </div>
-                <div>
-                    <span>login</span>
-                    <button>Выйти из аккаунта</button>
+                <div v-show='id  != -1'>
+                    <span>{{ login }}</span>
+                    <button @click=SignOut>Выйти из аккаунта</button>
                 </div>
             </div>
             <div class="mainMenu">

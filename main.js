@@ -29,10 +29,10 @@ new Vue({//ГЛАВНЫЙ компонент - Главное меню
 	data:{
         id: -1,//по этому полю можно опред авторизован ли чел, если -1 то нет иначк авторизован
 
-        login: 'none',
-        pass: 'none',
-        group: 'none',
-        typePers: 'none',
+        login: '',
+        pass: '',
+        group: '',
+        typePers: '-1',
 
 		curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 	},
@@ -43,16 +43,29 @@ new Vue({//ГЛАВНЫЙ компонент - Главное меню
         SignIn: function(){//ВХОД по логину
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}' AND password = '${this.pass}'`);
             if(isValidLogin["0"]["count(*)"] > 0){
-                this.id = getDataFromDB(`SELECT id FROM authorization WHERE login='${this.login}'`);
+                this.id = getDataFromDB(`SELECT id FROM authorization WHERE login='${this.login}'`)["0"]["id"];
             }else{
                 this.id = -1;
             }
         },
         SignUp: function() {//Регистрация по логину
-            
+            if(this.login == '') {console.log("Вы не ввели логин, пожалуйста, заполните соответствующее поле"); return;}
+            if(this.pass == '') {console.log("Вы не ввели пароль, пожалуйста, заполните соответствующее поле"); return;}
+            if(this.typePers == -1){console.log("Вы не выбрали тип пользователя"); return;}
+            if(this.group == '') {console.log("Поле группа, осталось пустым, пожалуйста. заполните его");return;}
+            let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}'`);
+            if(isValidLogin["0"]["count(*)"] > 0){ console.log("Такой логин уже занят, придумайте другой"); return; }
+            getDataFromDB(`INSERT INTO authorization (     login,        password,        id_type_person,     \`group\`     ) VALUES \
+                                                     ('${this.login}', '${this.login}',  '${this.typePers}','${this.group}' )`);
+            console.log("Вы зарегистрированы");
         },
         SignOut: function() {
-
+            this.id = -1;
+            this.login = '';
+            this.pass = '';
+            this.group = '';
+            this.typePers = '-1';
+            console.log("Вы вышли");
         }
     }
 });
