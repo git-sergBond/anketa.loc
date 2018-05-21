@@ -27,14 +27,31 @@ function getDataFromDB(sqlquery){//делает sql запрос к сервер
 new Vue({//ГЛАВНЫЙ компонент
     el: '#main-component',
 	data:{
-		curentView: 'menu'
+		curentView: 'NULL'
 	},
 	methods:{
 		SwitchView: function(view){
 			this.curentView = view;
 		}
-	}
+    },
+    mounted: function(){
+        this.curentView = 'MainMenu';
+    }
 });
+
+Vue.component('MainMenu',{
+    data: function () {
+        return {
+          count: 0
+        }
+    },
+    methods:{
+		go: function(arg){
+			this.$emit('exit',arg);
+		}
+	},
+    template: '#MainMenu-tmp'
+})
 
 //анкетирование
 Vue.component('cliker1', {
@@ -42,7 +59,7 @@ Vue.component('cliker1', {
 	  return {
 		count: 0
 	  }
-	},
+    },
 	template: '#cliker1-tmp'
 })
 //конфг тестов
@@ -54,7 +71,7 @@ Vue.component('cliker2', {
 	},
 	methods:{
 		exit: function(){
-			this.$emit('exit','menu');
+			this.$emit('exit','MainMenu');
 		}
 	},
 	template: '#cliker2-tmp'
@@ -68,7 +85,7 @@ Vue.component('authorizationRead',{
     },
     methods:{
 		exit: function(){
-			this.$emit('exit','menu');
+			this.$emit('exit','MainMenu');
         },
         load: function(){
             this.respons_db = getDataFromDB('SELECT * FROM authorization')

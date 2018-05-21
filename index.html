@@ -10,14 +10,20 @@
 <body>
     <!--меню-->
     <div id="main-component">
-        <div v-show="curentView=='menu'">
-            <button @click="SwitchView('cliker1')">cliker1</button>
-            <button @click="SwitchView('cliker2')">cliker2</button>
-            <button @click="SwitchView('authorizationRead')">authorizationRead</button>
-        </div>
+        <div></div>
+        
         <component :is=curentView transition="switch" @exit="SwitchView"></component>
     </div>
     
+    <!--меню-->
+    <template id='MainMenu-tmp'>
+        <div>
+            <button @click="go('cliker1')">cliker1</button>
+            <button @click="go('cliker2')">cliker2</button>
+            <button @click="go('authorizationRead')">authorizationRead</button>
+        </div>
+    </template>
+
     <!--анкетирование-->
     <template id='cliker1-tmp'>
         <button v-on:click="count++">анкетирование {{ count }} times.</button>
