@@ -27,19 +27,33 @@ function getDataFromDB(sqlquery){//делает sql запрос к сервер
 new Vue({//ГЛАВНЫЙ компонент - Главное меню
     el: '#main-component',
 	data:{
+        id: -1,//по этому полю можно опред авторизован ли чел, если -1 то нет иначк авторизован
 
         login: 'none',
         pass: 'none',
         group: 'none',
         typePers: 'none',
-        checkAutorization: false,
 
 		curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 	},
 	methods:{
-		SwitchView: function(view){
+		SwitchView: function(view){//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 			this.curentView = view;
-		}
+        },
+        SignIn: function(){//ВХОД по логину
+            let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}' AND password = '${this.pass}'`);
+            if(isValidLogin["0"]["count(*)"] > 0){
+                this.id = getDataFromDB(`SELECT id FROM authorization WHERE login='${this.login}'`);
+            }else{
+                this.id = -1;
+            }
+        },
+        SignUp: function() {//Регистрация по логину
+            
+        },
+        SignOut: function() {
+
+        }
     }
 });
 
