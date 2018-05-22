@@ -9,22 +9,25 @@
 </head>
 
 <body>
-    <!--Главный компонент -  Главное меню-->
+
+
+    <!--VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-->
+    <!--ГЛАВНЫЙ компонент - ГЛАВНОЕ МЕНЮ + АВТОРИЗАЦИЯ-->
+    <!--VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-->
     <div id="main-component">
         <div v-show="curentView == 'MainMenu'">
-            <div class="avtorizationBar">
+            <div>
                 <div>
                     <a>Войти</a>
                     <br>
-                    <label>
-                        <label>Логин</label>
-                        <input size="8" v-model='login'>
-                        <br>
-                        <label>Пароль</label>
-                        <input size="8" v-model='pass'>
-                        <br>
-                        <button @click=SignIn>Войти</button>
-                        <button>Закрыть</button>
+                    <label>Логин</label>
+                    <input size="8" v-model='login'>
+                    <br>
+                    <label>Пароль</label>
+                    <input size="8" v-model='pass'>
+                    <br>
+                    <button @click=SignIn>Войти</button>
+                     <button>Закрыть</button>
                 </div>
                 <div>
                     <a>Регистрация</a>
@@ -54,16 +57,13 @@
                     <button @click=SignOut>Выйти из аккаунта</button>
                 </div>
             </div>
-            <div class="mainMenu">
+            <div v-if='id != -1'>
+                <p>.:Пункты сменю:.</p>
                 <div>
-                    <p>.:Пункты сменю:.</p>
-                </div>
-                <div>
-                    <button @click="curentView='cliker1'">Анкетирование</button>
+                    <button @click="curentView='Anketirovanie'">Анкетирование</button>
                     <button @click="curentView='cliker2'">Эксперт</button>
                     <button @click="curentView='authorizationRead'">Соцтолог</button>
                 </div>
-    
                 <div>
                     <button @click="curentView='cliker1'">Конф. тестов</button>
                     <button @click="curentView='cliker2'">Конф. правил</button>
@@ -73,13 +73,39 @@
         </div>
         <component v-if="curentView != 'MainMenu'" :is=curentView transition="switch" @exit="SwitchView"></component>
     </div>
-    
-    <!--анкетирование-->
-    <template id='cliker1-tmp'>
-        <button v-on:click="count++">анкетирование {{ count }} times.</button>
+
+
+
+    <!--VVVVVVVVVVVVV-->
+    <!--АНКЕТИРОВАНИЕ-->
+    <!--VVVVVVVVVVVVV-->
+    <template id='Anketirovanie-tmp'>
+        <div>
+            <div v-show='panel == 0'>
+                <label>Введите ID теста</label><input v-model='id_test' size='8'>
+                <button @click='loadTest'>Загрузить</button>
+            </div>
+            <div v-show='panel == 1'>
+                <button @click='exit'>Выйти в главное меню</button>
+                <button @click='save'>Сохранить результат</button>
+                <button @click='openOtherTest'>Загрузить другой тест</button>
+            </div>
+            <div v-for='question in questions'>
+                <div><p>{{ question.question }}</p></div>
+                <div>
+                    <input v-if='question.id_type==1' v-model='question.val' type="checkbox">
+                    <input v-if='question.id_type==2' v-model='question.val' type="range" min="2" max="5" step="1" value="5"> 
+                    {{question.val}}
+                </div>
+            </div>
+        </div>
     </template>
-    
-    <!--конфг тестов-->
+
+
+
+    <!--VVVVVVVVVVVVVVVVVVV-->
+    <!--КОНФИГУРАТОР ТЕСТОВ-->
+    <!--VVVVVVVVVVVVVVVVVVV-->
     <template id='cliker2-tmp'>
         <div>
             <button v-on:click="count++">конфг тестов {{ count }} times.</button>
@@ -87,7 +113,11 @@
         </div>
     </template>
 
+
+
+    <!--VVVVVVVVVVVVVV-->
     <!-- считать с БД -->
+    <!--VVVVVVVVVVVVVV-->
     <template id='authorizationRead-tmp'>
         <div>
             <button @click='load'>load</button>

@@ -42,7 +42,7 @@ function insertDataInDB(sqlquery){//делает sql INSERT в БД и возв�
  * SPA НА VUE
  * ----------
  */
-var mainComponent = new Vue({//ГЛАВНЫЙ компонент - Главное меню
+var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНОЕ МЕНЮ + АВТОРИЗАЦИЯ
     el: '#main-component',
 	data:{
         id: -1,//по этому полю можно опред авторизован ли чел, если -1 то нет иначк авторизован
@@ -60,28 +60,27 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - Главно�
 		SwitchView: function(view){//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 			this.curentView = view;
         },
-        SignIn: function(){//ВХОД по логину
+        SignIn: function(){//ВХОД
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}' AND password = '${this.pass}'`);
             if(isValidLogin["0"]["count(*)"] > 0){
                 this.id = getDataFromDB(`SELECT id FROM authorization WHERE login='${this.login}'`)["0"]["id"];
-                alert("Авторизация  не пройдена");
+                alert("Авторизация  пройдена");
             }else{
                 this.id = -1;
-                alert("Авторизация пройдена");
+                alert("Авторизация не пройдена");
             }
         },
-        SignUp: function() {//Регистрация по логину
+        SignUp: function() {//РЕГИСТРАЦИЯ
             if(this.login == '') {alert("Вы не ввели логин, пожалуйста, заполните соответствующее поле"); return;}
             if(this.pass == '') {alert("Вы не ввели пароль, пожалуйста, заполните соответствующее поле"); return;}
             if(this.typePers == -1){alert("Вы не выбрали тип пользователя"); return;}
             if(this.group == '') {alert("Поле группа, осталось пустым, пожалуйста. заполните его");return;}
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}'`);
             if(isValidLogin["0"]["count(*)"] > 0){ alert("Такой логин уже занят, придумайте другой"); return; }
-            this.id = insertDataInDB(`INSERT INTO authorization (     login,        password,        id_type_person,     \`group\`     ) VALUES \
-                                                     ('${this.login}', '${this.login}',  '${this.typePers}','${this.group}' )`);
+            this.id = insertDataInDB(`INSERT INTO authorization (login, password, id_type_person, \`group\`) VALUES ('${this.login}', '${this.login}', '${this.typePers}','${this.group}')`);
             alert("Вы зарегистрированы");
         },
-        SignOut: function() {
+        SignOut: function() {//РАЗЛОГИНИТЬСЯ
             this.id = -1;
             this.login = '';
             this.pass = '';
@@ -91,17 +90,56 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - Главно�
         }
     }
 });
-
-//анкетирование
-Vue.component('cliker1', {
-	data: function () {
-	  return {
-		count: 0
-	  }
+/*
+ ********************
+ *   АНКЕТИРОВАНИЕ
+ ********************
+ */
+Vue.component('Anketirovanie', {
+    data: function () {
+        return {
+            panel: 0,//верхняя панель скрывается по этому параметру
+            id_test: '',
+            questions: []
+        }
     },
-	template: '#cliker1-tmp'
+    methods: {
+        loadTest: function () {
+            if (this.id_test == '') return;
+            let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
+            if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
+            this.panel = 1;
+            let tmp = getDataFromDB(`SELECT * FROM questions WHERE id_test = ${this.id_test}`);
+            tmp.forEach(el => {
+                if(el.id_type == 1) el.val = false;
+                else if(el.id_type == 2) el.val = 5;
+                else alert('Возможно ошибка в типе вопроса');
+            });
+            this.questions = tmp;
+        },
+        openOtherTest: function () {
+            this.questions = [];
+            this.panel = 0;
+        },
+        save: function () {
+            let err = -1;
+            this.questions.forEach(el => {
+                let sql = "INSERT INTO `res_testing`(`id_pers`,`id_question`,`answer`) VALUES (" + mainComponent.id + "," + el.id + "," + el.val + ")";
+                err = insertDataInDB(sql);
+            });
+            if(err == -1){  alert('Ошибка вставки данных'); return; }
+        },
+        exit: function () {
+            this.$emit('exit', 'MainMenu');
+        }
+    },
+    template: '#Anketirovanie-tmp'
 })
-//конфг тестов
+/*
+ *************************
+ *   КОНФИГУРАТОР ТЕСТОВ
+ *************************
+ */
 Vue.component('cliker2', {
 	data: function () {
 	  return {
