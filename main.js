@@ -1,6 +1,5 @@
 /*
 Срочно:
-1 учет типа пользователя: должны высчечиваться, только те пункты кот нужны определенному типу пользователя
 */
 
 /*
@@ -8,6 +7,11 @@
 1 добавить перезапись UPDATE в анкетировании, или возможность повторного тестирования, при одном и томже прохождении теста
 2 считывание типов пользователей и типов вопросов из бд в лист боксы
 3 не работает clearData из дочернего компонета //143 
+*/
+
+/*
+Желательно:
+1 добавить сверху название теста
 */
 
 /* ----------
@@ -62,11 +66,11 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
         login: '',
         pass: '',
         group: '',
-        typePers: '-1',
+        typePers: -1,
 
         txt: 0,
 
-		curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
+        curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 	},
 	methods:{
 		SwitchView: function(view){//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
@@ -75,8 +79,10 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
         SignIn: function(){//ВХОД
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}' AND password = '${this.pass}'`);
             if(isValidLogin["0"]["count(*)"] > 0){
-                this.id = getDataFromDB(`SELECT id FROM authorization WHERE login='${this.login}'`)["0"]["id"];
-                alert("Авторизация  пройдена");
+                let tmp  = getDataFromDB(`SELECT * FROM authorization WHERE login='${this.login}'`);
+                this.id = tmp["0"]["id"];
+                this.typePers = tmp["0"]["id_type_person"];
+                //alert("Авторизация  пройдена");
             }else{
                 this.id = -1;
                 alert("Авторизация не пройдена");
@@ -89,7 +95,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
             if(this.group == '') {alert("Поле группа, осталось пустым, пожалуйста. заполните его");return;}
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}'`);
             if(isValidLogin["0"]["count(*)"] > 0){ alert("Такой логин уже занят, придумайте другой"); return; }
-            this.id = insertDataInDB(`INSERT INTO authorization (login, password, id_type_person, \`group\`) VALUES ('${this.login}', '${this.login}', '${this.typePers}','${this.group}')`);
+            this.id = insertDataInDB(`INSERT INTO authorization (login, password, id_type_person, \`group\`) VALUES ('${this.login}', '${this.pass}', '${this.typePers}','${this.group}')`);
             alert("Вы зарегистрированы");
         },
         SignOut: function() {//РАЗЛОГИНИТЬСЯ
@@ -158,19 +164,46 @@ Vue.component('Anketirovanie', {
  *   КОНФИГУРАТОР ТЕСТОВ
  *************************
  */
-Vue.component('cliker2', {
+
+Vue.component('KonfTest', {
 	data: function () {
 	  return {
-		count: 0
+        panel: 0,//верхняя панель скрывается по этому параметру
+        id_test: '',
+        questions: []
 	  }
 	},
 	methods:{
+        loadTest: function () {
+            if (this.id_test == '') return;
+            let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
+            if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
+            this.panel = 1;
+            this.questions = getDataFromDB(`SELECT * FROM questions WHERE id_test = ${this.id_test}`);
+            console.log(this.questions)
+        },
+        addQuestion: function(){
+            
+        },
+        delQuestion: function(){
+
+        },
+        save: function(){
+
+        },
 		exit: function(){
 			this.$emit('exit','MainMenu');
-		}
+        }
 	},
-	template: '#cliker2-tmp'
+	template: '#KonfTest-tmp'
 })
+/*
+ *************************
+ *   КОНФИГУРАТОР ПРАВИЛ
+ *************************
+ */
+
+
 //считать с БД
 Vue.component('authorizationRead',{
     data: function() {

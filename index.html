@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+    
 <head>
     <title>Тестовая страничка SPA</title>
     <meta charset="utf-8">
@@ -45,8 +45,8 @@
                     <select v-model='typePers'>
                         <option disabled value="-1">Выберите один из вариантов</option>
                         <option value="1">Ученик</option>
-                        <option value="2">Социолог</option>
-                        <option value="3">Эксперт</option>
+                        <option value="2">Эксперт</option>
+                        <option value="3">Социолог</option>
                     </select>
                     <br>
                     <button @click=SignUp >Зарегистрироваться</button>
@@ -60,14 +60,12 @@
             <div v-if='id != -1'>
                 <p>.:Пункты сменю:.</p>
                 <div>
-                    <button @click="curentView='Anketirovanie'">Анкетирование</button>
-                    <button @click="curentView='cliker2'">Эксперт</button>
-                    <button @click="curentView='authorizationRead'">Соцтолог</button>
-                </div>
-                <div>
-                    <button @click="curentView='cliker1'">Конф. тестов</button>
-                    <button @click="curentView='cliker2'">Конф. правил</button>
-                    <button @click="curentView='authorizationRead'">Дефазификация</button>
+                    <button v-if='typePers == 1' @click="curentView='Anketirovanie'">Анкетирование</button>
+                    <button v-if='typePers == 2' @click="curentView='cliker2'">Эксперт</button>
+                    <button v-if='typePers == 3' @click="curentView='authorizationRead'">Соцтолог</button>
+                    <button v-if='typePers == 3' @click="curentView='KonfTest'">Конф. тестов</button>
+                    <button v-if='typePers == 3' @click="curentView='cliker2'">Конф. правил</button>
+                    <button v-if='typePers == 3' @click="curentView='authorizationRead'">Дефазификация</button>
                 </div>
             </div>
         </div>
@@ -82,7 +80,8 @@
     <template id='Anketirovanie-tmp'>
         <div>
             <div v-show='panel == 0'>
-                <label>Введите ID теста</label><input v-model='id_test' size='8'>
+                <label>Введите ID теста</label>
+                <input v-model='id_test' size='8'>
                 <button @click='loadTest'>Загрузить</button>
                 <button @click='exit'>Выйти в главное меню</button>
             </div>
@@ -92,11 +91,12 @@
                 <button @click='openOtherTest'>Загрузить другой тест</button>
             </div>
             <div v-for='question in questions'>
-                <div><p>{{ question.question }}</p></div>
+                <div>
+                    <p>{{ question.question }}</p>
+                </div>
                 <div>
                     <input v-if='question.id_type==1' v-model='question.val' type="checkbox">
-                    <input v-if='question.id_type==2' v-model='question.val' type="range" min="2" max="5" step="1" value="5"> 
-                    {{question.val}}
+                    <input v-if='question.id_type==2' v-model='question.val' type="range" min="2" max="5" step="1" value="5"> {{question.val}}
                 </div>
             </div>
         </div>
@@ -107,14 +107,40 @@
     <!--VVVVVVVVVVVVVVVVVVV-->
     <!--КОНФИГУРАТОР ТЕСТОВ-->
     <!--VVVVVVVVVVVVVVVVVVV-->
-    <template id='cliker2-tmp'>
+    <template id='KonfTest-tmp'>
         <div>
-            <button v-on:click="count++">конфг тестов {{ count }} times.</button>
-            <button @click=exit>exit</button>
+            <div v-show='panel == 0'>
+                <label>Введите ID теста</label>
+                <input v-model='id_test' size='8'>
+                <button @click='loadTest'>Загрузить</button>
+                <button @click='exit'>Выйти в главное меню</button>
+            </div>
+            <div v-show='panel == 1'>
+                <button @click='exit'>Выйти в главное меню (без сохранения)</button>
+                <button @click='openOtherTest'>Загрузить другой тест</button>
+                <button @click='save'>Сохранить результаты</button>
+                <button @click='addQuestion'>Добавить вопрос</button>
+            </div>
+            <div v-for='question in questions' style=" display: flex ">
+                <p>{{ question.question }}</p>
+                <div>
+                    <select v-model='question.id_type'>
+                        <option disabled value="-1">Выберите тип вопроса</option>
+                        <option value="1">Да/Нет</option>
+                        <option value="2">Выбор значения от A до B</option>
+                    </select>
+                    <div v-if='question.id_type==2'>
+                        <label>A</label>
+                        <input v-model='question.val' type="text">
+                        <span> </span>
+                        <label>B</label>
+                        <input v-model='question.val' type="text">
+                    </div>
+                </div>
+                <button @click='delQuestion'>Удалить вопрос</button>
+            </div>
         </div>
     </template>
-
-
 
     <!--VVVVVVVVVVVVVV-->
     <!-- считать с БД -->
