@@ -216,13 +216,11 @@ Vue.component('KonfTest', {
             this.questions.splice(index,1);
         },
         save: function(){
-            console.log(this.questions);
             this.questions.forEach(el => {
                 if(el.id == 'new'){
                     if(el.id_type == -1) {alert('Не был выбран тип вопроса'); return;}
                     let sql = `INSERT INTO questions (\`id_type\`, \`id_test\`, \`question\`) VALUES ( ${el.id_type}, ${el.id_test}, '${el.question}' )`;
                     let id = insertDataInDB(sql);
-                    console.log(sql);
                     if(id == -1) {alert('Ошибка вставки'); return;}
                     el.id = id;
                 }else{
@@ -231,7 +229,6 @@ Vue.component('KonfTest', {
                         "question = '" + el.question + "'" +
                         "WHERE id = " + el.id;
                     let id = insertDataInDB(sql);
-                    console.log(sql);
                     if(id == -1) {alert('Ошибка обновления'); return;}
                     
                 }
@@ -240,7 +237,6 @@ Vue.component('KonfTest', {
             this.delete_questions.forEach(id_del => {
                 if(id_del != 'new'){
                     let sql = "DELETE FROM questions WHERE id = " + id_del;
-                    console.log(sql);
                     let id = insertDataInDB(sql);
                     if(id == -1) {alert('Ошибка удаления'); errDel = true; return;}
                 }
