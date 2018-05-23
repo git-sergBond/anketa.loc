@@ -218,11 +218,11 @@ Vue.component('KonfTest', {
             console.log(this.questions);
             this.questions.forEach(el => {
                 if(el.id == 'new'){
-                    if(el.id_type == -1) {alert('Не был выбран тип вопроса'); break;}
+                    if(el.id_type == -1) {alert('Не был выбран тип вопроса'); return;}
                     let sql = `INSERT INTO questions (\`id_type\`, \`id_test\`, \`question\`) VALUES ( ${el.id_type}, ${el.id_test}, '${el.question}' )`;
                     let id = insertDataInDB(sql);
                     console.log(sql);
-                    if(id == -1) {alert('Ошибка вставки'); break;}
+                    if(id == -1) {alert('Ошибка вставки'); return;}
                     el.id = id;
                 }else{
                     let sql = "UPDATE questions SET " +
@@ -230,17 +230,18 @@ Vue.component('KonfTest', {
                         "question = '" + el.question + "'" +
                         "WHERE id = " + el.id;
                     let id = insertDataInDB(sql);
-                    if(id == -1) {alert('Ошибка обновления'); break;}
                     console.log(sql);
+                    if(id == -1) {alert('Ошибка обновления'); return;}
+                    
                 }
             });
             let errDel = false;
-            this.delete_questions.forEach(el => {
-                if(el.id != 'new'){
-                    let sql = "DELETE FROM questions SET WHERE id = " + el.id;
-                    let id = insertDataInDB(sql);
-                    if(id == -1) {alert('Ошибка удаления'); errDel = true; break;}
+            this.delete_questions.forEach(id_del => {
+                if(id_del != 'new'){
+                    let sql = "DELETE FROM questions WHERE id = " + id_del;
                     console.log(sql);
+                    let id = insertDataInDB(sql);
+                    if(id == -1) {alert('Ошибка удаления'); errDel = true; return;}
                 }
             });
             if(!errDel) this.delete_questions = [];
