@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    
+
 <head>
     <title>Тестовая страничка SPA</title>
     <meta charset="utf-8">
@@ -121,23 +121,24 @@
                 <button @click='save'>Сохранить результаты</button>
                 <button @click='addQuestion'>Добавить вопрос</button>
             </div>
-            <div v-for='question in questions' style=" display: flex ">
-                <p>{{ question.question }}</p>
-                <div>
-                    <select v-model='question.id_type'>
-                        <option disabled value="-1">Выберите тип вопроса</option>
-                        <option value="1">Да/Нет</option>
-                        <option value="2">Выбор значения от A до B</option>
-                    </select>
-                    <div v-if='question.id_type==2'>
-                        <label>A</label>
-                        <input v-model='question.val' type="text">
-                        <span> </span>
-                        <label>B</label>
-                        <input v-model='question.val' type="text">
+            <div style=" display: flex; flex-direction: column; ">
+                <div v-for='(value, index) in questions' style=" display: flex; flex-direction: column; margin: 1em">
+                    <textarea style="flex: 1;" v-model='value.question'></textarea>
+                    <div style="display: flex">
+                        <select v-model='value.id_type' style=" margin: 1em">
+                            <option disabled value="-1">Выберите тип вопроса</option>
+                            <option value="1">Да/Нет</option>
+                            <option value="2">Выбор значения от A до B</option>
+                        </select>
+                        <div v-if='value.id_type==2' style=" display: flex; margin: 1em ">
+                            <label>A</label>
+                            <input v-model='value.A' type="text" size="3">
+                            <label>B</label>
+                            <input v-model='value.B' type="text" size="3">
+                        </div>
+                        <button @click='delQuestion(index)' style=" margin: 1em">Удалить вопрос</button>
                     </div>
                 </div>
-                <button @click='delQuestion'>Удалить вопрос</button>
             </div>
         </div>
     </template>

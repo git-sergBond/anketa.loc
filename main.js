@@ -1,4 +1,24 @@
 /*
+ -=САЙТ ДЛЯ ПРОВЕДЕНИЯ Online АНКЕТИРОВАНИЯ=-
+        
+   -=АЛГОРИТМ: Мамдани, нечеткая логика=-
+        
+              -=карта сайта=-
+        корень--> МЕНЮ + АВТОРИЗАЦИЯ
+                1---> АНКЕТИРОВАНИЕ
+                2---> КОНФИГУРАТОР ТЕСТОВ
+                3---> КОНФИГУРАТОР ПРАВИЛ
+                4---> ФОРМА ЭКСПЕРТА
+                5---> ФОРМА СОЦИОЛОГА
+                6---> ДЕФАЗИФИКАЦИЯ И ВЫВОДЫ
+
+            -=права доступа=-
+       1 - доступно студентам
+       2, 3, 5, 6 - доступно социологу
+       5 - доступно социологу                  
+*/
+
+/*
 Срочно:
 */
 
@@ -12,6 +32,7 @@
 /*
 Желательно:
 1 добавить сверху название теста
+2 добавить сортировку по номеру в конфигураторе и тестировании
 */
 
 /* ----------
@@ -68,7 +89,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
         group: '',
         typePers: -1,
 
-        txt: 0,
+        txt: 0,//вроде нигде больше не юзал, кроме проверки JSON
 
         curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
 	},
@@ -82,7 +103,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 let tmp  = getDataFromDB(`SELECT * FROM authorization WHERE login='${this.login}'`);
                 this.id = tmp["0"]["id"];
                 this.typePers = tmp["0"]["id_type_person"];
-                //alert("Авторизация  пройдена");
+                alert("Авторизация  пройдена");
             }else{
                 this.id = -1;
                 alert("Авторизация не пройдена");
@@ -170,7 +191,8 @@ Vue.component('KonfTest', {
 	  return {
         panel: 0,//верхняя панель скрывается по этому параметру
         id_test: '',
-        questions: []
+        questions: [],
+        delete_questions: []//набиваются id для удаления
 	  }
 	},
 	methods:{
@@ -180,16 +202,48 @@ Vue.component('KonfTest', {
             if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
             this.panel = 1;
             this.questions = getDataFromDB(`SELECT * FROM questions WHERE id_test = ${this.id_test}`);
-            console.log(this.questions)
+        },
+        openOtherTest: function(){
+            this.questions = [];
+            this.panel = 0;
         },
         addQuestion: function(){
-            
+            this.questions.push({id: 'new', id_test: this.id_test,  id_type: -1, number: -1, question: 'Введите формулировку вопроса'});
         },
-        delQuestion: function(){
-
+        delQuestion: function(index){
+            this.delete_questions.push(this.questions[index].id);
+            this.questions.splice(index,1);
         },
         save: function(){
-
+            console.log(this.questions);
+            this.questions.forEach(el => {
+                if(el.id == 'new'){
+                    if(el.id_type == -1) {alert('Не был выбран тип вопроса'); break;}
+                    let sql = `INSERT INTO questions (\`id_type\`, \`id_test\`, \`question\`) VALUES ( ${el.id_type}, ${el.id_test}, '${el.question}' )`;
+                    let id = insertDataInDB(sql);
+                    console.log(sql);
+                    if(id == -1) {alert('Ошибка вставки'); break;}
+                    el.id = id;
+                }else{
+                    let sql = "UPDATE questions SET " +
+                        "id_type = " + el.id_type + ", " +
+                        "question = '" + el.question + "'" +
+                        "WHERE id = " + el.id;
+                    let id = insertDataInDB(sql);
+                    if(id == -1) {alert('Ошибка обновления'); break;}
+                    console.log(sql);
+                }
+            });
+            let errDel = false;
+            this.delete_questions.forEach(el => {
+                if(el.id != 'new'){
+                    let sql = "DELETE FROM questions SET WHERE id = " + el.id;
+                    let id = insertDataInDB(sql);
+                    if(id == -1) {alert('Ошибка удаления'); errDel = true; break;}
+                    console.log(sql);
+                }
+            });
+            if(!errDel) this.delete_questions = [];
         },
 		exit: function(){
 			this.$emit('exit','MainMenu');
