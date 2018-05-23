@@ -254,7 +254,25 @@ Vue.component('KonfTest', {
  *   КОНФИГУРАТОР ПРАВИЛ
  *************************
  */
+Vue.component('KonfRules',{
+    data: function(){
+        return {
+            panel: 0,//верхняя панель скрывается по этому параметру
+            id_test: '',
 
+            currRule: null,//текущее правило на странице
+            rules: [],
+            del_rules: [],
+            numPagination: 0
+        }
+    },
+    methods: {
+        exit: function(){
+			this.$emit('exit','MainMenu');
+        }
+    },
+    template: '#KonfRules-tmp'
+})
 
 //считать с БД
 Vue.component('authorizationRead',{

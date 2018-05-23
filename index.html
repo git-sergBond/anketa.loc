@@ -6,6 +6,9 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="main.css">
     <script type="text/javascript" src="vue.js"></script>
+    <link rel="stylesheet" href="bootstrap.css">
+    <script src="bootstrap.js"></script>
+    
 </head>
 
 <body>
@@ -64,7 +67,7 @@
                     <button v-if='typePers == 2' @click="curentView='cliker2'">Эксперт</button>
                     <button v-if='typePers == 3' @click="curentView='authorizationRead'">Соцтолог</button>
                     <button v-if='typePers == 3' @click="curentView='KonfTest'">Конф. тестов</button>
-                    <button v-if='typePers == 3' @click="curentView='cliker2'">Конф. правил</button>
+                    <button v-if='typePers == 3' @click="curentView='KonfRules'">Конф. правил</button>
                     <button v-if='typePers == 3' @click="curentView='authorizationRead'">Дефазификация</button>
                 </div>
             </div>
@@ -143,6 +146,130 @@
         </div>
     </template>
 
+
+
+    <!--VVVVVVVVVVVVVVVVVVV-->
+    <!--КОНФИГУРАТОР ПРАВИЛ-->
+    <!--VVVVVVVVVVVVVVVVVVV-->
+    <template id='KonfRules-tmp'>
+        <div>
+            <div v-show='panel == 0'>
+                <label>Введите ID теста</label>
+                <input v-model='id_test' size='8'>
+                <button @click='loadTest'>Загрузить</button>
+                <button @click='exit'>Выйти в главное меню</button>
+            </div>
+    
+            <div v-show='panel == 1'>
+                <button @click='exit'>Выйти в главное меню (без сохранения)</button>
+                <button @click='openOtherTest'>Загрузить другие правила</button>
+                <button @click='save'>Сохранить все правила</button>
+                <button @click='addRule'>Добавить правило</button>
+                <button @click='addRule'>Добавить правило</button>
+            </div>
+            <div v-show='currRule != null'  style="display: flex; flex-direction: column" >
+                    <div style="flex: 0.2; text-align: center; margin: 2em"><label>Варианты принимаемых решений</label><textarea></textarea></div>
+                    <div style="flex: 0.2; display: flex; justify-content: space-around; margin: 2em">
+                        <div><label>A</label><input type="text" size="3"></div>
+                        <div><label>B</label><input type="text" size="3"></div>
+                        <div><label>C</label><input type="text" size="3"></div>
+                        <div><label>D</label><input type="text" size="3"></div>
+                        <div><label>E</label><input type="text" size="3"></div>
+                        <div><label>F</label><input type="text" size="3"></div>
+                        <div><label>G</label><input type="text" size="3"></div>
+                        <div><label>H</label><input type="text" size="3"></div>
+                    </div>
+                    <div style="flex: 1; margin: 2em">
+                        <!-- ТРИ ВКЛАДКИ -->
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home"
+                                    aria-selected="true">Низкий</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile"
+                                    aria-selected="false">Средний</a>
+                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact"
+                                    aria-selected="false">Высокий</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
+                            style="padding: 3em">
+                                <div style="display: flex; height: 3em; justify-content: space-between">
+                                    <div style="display: flex; flex: 0.25; justify-content: left;">
+                                        <label >Коф. определенности = </label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div style="display: flex; flex: 0.25; justify-content: right;">
+                                        <label >Тип условия = </label>
+                                        <select class="form-control">
+                                            <option>да</option>
+                                            <option>нет</option>
+                                            <option>2..5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <div style="display: flex;">
+                                        <label>A </label>
+                                        <select style="flex: 1" class="form-control">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                        </select>
+                                        <label> = </label>
+                                        <select style="flex: 0.2" class="form-control">
+                                            <option>Низкий</option>
+                                            <option>Средний</option>
+                                            <option>Высокий</option>
+                                        </select>
+                                    </div>
+                                    <div style="display: flex;">
+                                        <label>B </label>
+                                        <select style="flex: 1" class="form-control">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                        </select>
+                                        <label> = </label>
+                                        <select style="flex: 0.2" class="form-control">
+                                            <option>Низкий</option>
+                                            <option>Средний</option>
+                                            <option>Высокий</option>
+                                        </select>
+                                    </div>
+                                    <div style="display: flex;">
+                                        <label>C </label>
+                                        <select style="flex: 1" class="form-control">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                        </select>
+                                        <label> = </label>
+                                        <select style="flex: 0.2" class="form-control">
+                                            <option>Низкий</option>
+                                            <option>Средний</option>
+                                            <option>Высокий</option>
+                                        </select>
+                                    </div>
+                                    </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                ...</div>
+                            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                ...</div>
+                        </div>
+                    </div>
+                <div style="flex: 0.1; display: flex; justify-content: space-around; margin: 2em">
+                    <button @click='leftPagination'> <<< </button>
+                    <p>[{{ numPagination }}]</p>
+                    <button @click='rightPagination'> >>> </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+
     <!--VVVVVVVVVVVVVV-->
     <!-- считать с БД -->
     <!--VVVVVVVVVVVVVV-->
@@ -159,6 +286,11 @@
     </template>
 
     <script type="text/javascript" src="main.js"></script>
+    <!--Подключение скриптов бутстрап -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
