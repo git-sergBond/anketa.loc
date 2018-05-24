@@ -291,7 +291,7 @@ Vue.component('KonfRules',{
                         g: high.g,
                         h: high.h
                     },
-                    power = {
+                    power: {
                         high: {
                             id: high.id,
                             kof: high.kof,
