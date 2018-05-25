@@ -57,13 +57,13 @@
                             <form id="signin_form" action='/' method='post'>
                                 <div class="form-froup">
                                     <label for="exampleInputLogin">Введите логин:</label>
-                                    <input v-model='login' type="login" class="form-control" id="exampleInputLogin" aria-descriptbdby="loginHelp" placeholder="Логин"
+                                    <input v-model='login' type="login" class="form-control" aria-descriptbdby="loginHelp" placeholder="Логин"
                                         required>
                                     <small id="loginHelp" class="form-text text-muted">Введите ваш логин</small>
                                 </div>
                                 <div class="form-froup">
                                     <label for="exampleInputPass">Введите пароль:</label>
-                                    <input v-model='pass' type="password" class="form-control" id="exampleInputPass" placeholder="Пароль" required>
+                                    <input v-model='pass' type="password" class="form-control" placeholder="Пароль" required>
                                     <small id="passHelp" class="form-text text-muted">Введите ваш пароль</small>
                                     <div class="modal-footer">
                                         <button class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -93,12 +93,12 @@
                             <form id="signup_form" action="/" method="post">
                                 <div class="form-froup">
                                     <label for="exampleInputLogin">Придумайте логин:</label>
-                                    <input v-model='login' type="login" class="form-control" id="exampleInputLogin" aria-descriptbdby="loginHelp" placeholder="Логин">
+                                    <input v-model='login' type="login" class="form-control" aria-descriptbdby="loginHelp" placeholder="Логин">
                                     <small id="loginHelp" class="form-text text-muted">Логин должен содержать латинские символы</small>
                                 </div>
                                 <div class="form-froup">
                                     <label for="exampleInputPass">Придумайте пароль:</label>
-                                    <input v-model='pass' type="password" class="form-control" id="exampleInputPass" placeholder="Пароль">
+                                    <input v-model='pass' type="password" class="form-control" placeholder="Пароль">
                                     <small id="passHelp" class="form-text text-muted">Пароль должен содержать 8 символов</small>
                                     <div class="form-froup">
                                         <label for="exampleInputGroup">Введите группу:</label>
@@ -225,199 +225,253 @@
 </template>
 
 
-
-    <!--VVVVVVVVVVVVVVVVVVV-->
-    <!--КОНФИГУРАТОР ТЕСТОВ-->
-    <!--VVVVVVVVVVVVVVVVVVV-->
-    <template id='KonfTest-tmp'>
-        <div>
-            <div v-show='panel == 0'>
-                <label>Введите ID теста</label>
-                <input v-model='id_test' size='8'>
-                <button @click='loadTest'>Загрузить</button>
-                <button @click='exit'>Выйти в главное меню</button>
+<!--VVVVVVVVVVVVVVVVVVV-->
+<!--КОНФИГУРАТОР ТЕСТОВ-->
+<!--VVVVVVVVVVVVVVVVVVV-->
+<template id='KonfTest-tmp'>
+    <div>
+        <!--Начало блока шапка страницы-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <!--Кнопки на navbar -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="margin-right: 1.3em">
+                        <label v-show='panel == 0' style="color: #eee"> Введите ID анкеты:</label>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1.3em">
+                        <input v-show='panel == 0' v-model='id_test' class="form-control" style="float: left;">
+                    </li>
+                    <li class="nav-item" style="margin-right: 1.3em">
+                        <button v-show='panel == 0' @click='loadTest' type="button" class="btn btn-danger" style="float: right;">Загрузить</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1.3em">
+                        <button v-show='panel == 1' @click='save' type="button" class="btn btn-danger">Сохранить результат</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1.3em">
+                        <button v-show='panel == 1' @click='openOtherTest' type="button" class="btn btn-danger">Загрузить другой тест</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1.3em">
+                        <button v-show='panel == 1' @click='addQuestion' type="button" class="btn btn-danger">Добавить вопрос</button>
+                    </li>
+                </ul>
             </div>
-            <div v-show='panel == 1'>
-                <button @click='exit'>Выйти в главное меню (без сохранения)</button>
-                <button @click='openOtherTest'>Загрузить другой тест</button>
-                <button @click='save'>Сохранить результаты</button>
-                <button @click='addQuestion'>Добавить вопрос</button>
-            </div>
-            <div style=" display: flex; flex-direction: column; ">
-                <div v-for='(value, index) in questions' style=" display: flex; flex-direction: column; margin: 1em">
-                    <textarea style="flex: 1;" v-model='value.question'></textarea>
-                    <div style="display: flex">
-                        <select v-model='value.id_type' style=" margin: 1em">
-                            <option disabled value="-1">Выберите тип вопроса</option>
-                            <option value="1">Да/Нет</option>
-                            <option value="2">Выбор значения от A до B</option>
-                        </select>
-                        <div v-if='value.id_type==2' style=" display: flex; margin: 1em ">
-                            <label>A</label>
-                            <input v-model='value.A' type="text" size="3">
-                            <label>B</label>
-                            <input v-model='value.B' type="text" size="3">
+            <button @click='exit' type="button" class="btn btn-danger">Главное меню</button>
+        </nav>
+        <!--Конец блока кнопок-->
+        <!--Начало блока конфигуратора -->
+        <div class="container" style="padding-top: 50px; font-size: 1.5rem">
+            <div v-for='(value, index) in questions' class="row" >
+                <div class="col-lg-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <label for="exampleInputQuest">Введите вопрос:</label>
+                            <input v-model='value.question' type="question" class="form-control" id="exampleInputQuest" placeholder="Вопрос 1" required>
                         </div>
-                        <button @click='delQuestion(index)' style=" margin: 1em">Удалить вопрос</button>
+                        <div class="col-lg-2" style="padding-top: 44px">
+                            <select v-model='value.id_type' class="form-control" id="exampleSelect">
+                                <option disabled value="-1">Выберите тип вопроса</option>
+                                <option value="1">Да/Нет</option>
+                                <option value="2">от A до B</option>
+                            </select>
+                        </div>
+                        <div class="delitequest" style="padding-top: 40px">
+                            <button @click='delQuestion(index)' type="button" class="btn btn-danger">Удалить вопрос</button>
+                        </div>
+                        <div v-if='value.id_type==2' style=" display: flex; margin: 1em ">
+                                <label>A</label>
+                                <input v-model='value.A' type="text" size="3">
+                                <label>B</label>
+                                <input v-model='value.B' type="text" size="3">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </template>
-
-
-
-    <!--VVVVVVVVVVVVVVVVVVV-->
-    <!--КОНФИГУРАТОР ПРАВИЛ-->
-    <!--VVVVVVVVVVVVVVVVVVV-->
-    <template id='KonfRules-tmp'>
-        <div>
-            <div v-show='panel == 0'>
-                <label>Введите ID теста</label>
-                <input v-model='id_test' size='8'>
-                <button @click='loadRules'>Загрузить</button>
-                <button @click='exit'>Выйти в главное меню</button>
-            </div>
-            <div v-show='panel == 1'>
-                <button @click='exit'>Выйти в главное меню (без сохранения)</button>
-                <button @click='openOtherTest'>Загрузить другие правила</button>
-                <button @click='save'>Сохранить все правила</button>
-                <button @click='addRule'>Добавить правило</button>
-                <button @click='delRule'>Удалить правило</button>
-            </div>
-            <div v-show='numPagination != -1' style="display: flex; flex-direction: column">
-                <div style="flex: 0.2; text-align: center; margin: 2em">
-                    <label>Варианты принимаемых решений</label>
-                    <textarea></textarea>
-                </div>
-                <div style="flex: 0.2; display: flex; justify-content: space-around; margin: 2em">
-                    <div>
-                        <label>A</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>B</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>C</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>D</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>E</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>F</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>G</label>
-                        <input type="text" size="3">
-                    </div>
-                    <div>
-                        <label>H</label>
-                        <input type="text" size="3">
-                    </div>
-                </div>
-                <div style="flex: 1; margin: 2em">
-                    <!-- ТРИ ВКЛАДКИ -->
-                    <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home"
-                                aria-selected="true">Низкий</a>
-                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile"
-                                aria-selected="false">Средний</a>
-                            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact"
-                                aria-selected="false">Высокий</a>
+        <!--Конец блока конфигуратора -->
+    </div>
+</template>
+<!--VVVVVVVVVVVVVVVVVVV-->
+<!--КОНФИГУРАТОР ПРАВИЛ-->
+<!--VVVVVVVVVVVVVVVVVVV-->
+<template id='KonfRules-tmp'>
+    <div>
+        <!--Начало блока шапка страницы-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <!--Кнопки на navbar -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="margin-right: 1em">
+                        <label v-show='panel == 0' style="color: #eee"> Введите ID анкеты:</label>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <input v-show='panel == 0' v-model='id_test' class="form-control" style="float: left;">
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 0' @click='loadRules' type="button" class="btn btn-danger" style="float: right;">Загрузить</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 1' @click='save' type="button" class="btn btn-danger">Сохранить все правила</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 1' @click='openOtherRules' type="button" class="btn btn-danger">Загрузить другие правила</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 1' @click='addRule' type="button" class="btn btn-danger">Добавить правило</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 1' @click='delRule' type="button" class="btn btn-danger">Удалить правило</button>
+                    </li>
+                    <li v-show='panel == 1' class="nav-item" style="margin-right: 1.3em;margin-left: 1.3em">
+                        <div class="Pagination">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <a @click='leftPagination' class="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">{{ numPagination + 1 }}</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a @click='rightPagination' class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-                    </nav>
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" style="padding: 3em">
-                            <div style="display: flex; height: 3em; justify-content: space-between">
-                                <div style="display: flex; flex: 0.25; justify-content: left;">
-                                    <label>Коф. определенности = </label>
-                                    <input type="text" class="form-control">
+                    </li>
+                </ul>
+            </div>
+            <button @click='exit' type="button" class="btn btn-danger">Главное меню</button>
+        </nav>
+        <!--Начало блока конфигуратора -->
+        <div v-if='numPagination != -1'>
+            <div style="flex: 0.2; margin: 2em">
+                <label style="float: left;">Варианты принимаемых решений:</label>
+                <input v-model='curRule.conclusion' type="var_rules" class="form-control" id="exampleInputQuest" placeholder="Введите вариант принимаемых решений">
+            </div>
+            <div style="flex: 0.2; display: flex; justify-content: space-around; margin: 2em; clear: left">
+                <div>
+                    <label style="margin-right: 1em">A:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">B:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">C:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">D:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">E:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">F:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">G:</label>
+                    <input type="text" size="3">
+                </div>
+                <div>
+                    <label style="margin-right: 1em">H:</label>
+                    <input type="text" size="3">
+                </div>
+            </div>
+            <!--Конец блока конфигуратора -->
+            <!--Значения для НИЗ/СРЕД/ВЫСОКИЙ-->
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home"
+                        aria-selected="true">Низкий</a>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile"
+                        aria-selected="false">Средний</a>
+                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact"
+                        aria-selected="false">Высокий</a>
+                </div>
+            </nav>
+            <div class="container" style="padding-top: 50px; font-size: 1.5rem">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div style="display: flex; justify-content: space-between">
+                            <div class="nikak" style="display: flex; justify-content: space-between;width: 100%; height: 3em">
+                                <div class="kof_opredelen">
+                                    <label for="exampleInputKof" style="float: left; margin-right: 1em ">Коэф.определенности:</label>
+                                    <input type="kof_opr" class="form-control" id="exampleInputKof" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 10em">
                                 </div>
-                                <div style="display: flex; flex: 0.25; justify-content: right;">
-                                    <label>Тип условия = </label>
-                                    <select class="form-control">
+                                <div class="type_condition">
+                                    <label for="exampleInputCond" style="float: left; margin-right: 1em ">Тип условия:</label>
+                                    <select class="form-control" style="width: 10em">
                                         <option>да</option>
                                         <option>нет</option>
                                         <option>2..5</option>
                                     </select>
                                 </div>
                             </div>
-                            <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex;">
-                                    <label>A </label>
-                                    <select style="flex: 1" class="form-control">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                    </select>
-                                    <label> = </label>
-                                    <select style="flex: 0.2" class="form-control">
-                                        <option>Низкий</option>
-                                        <option>Средний</option>
-                                        <option>Высокий</option>
-                                    </select>
-                                </div>
-                                <div style="display: flex;">
-                                    <label>B </label>
-                                    <select style="flex: 1" class="form-control">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                    </select>
-                                    <label> = </label>
-                                    <select style="flex: 0.2" class="form-control">
-                                        <option>Низкий</option>
-                                        <option>Средний</option>
-                                        <option>Высокий</option>
-                                    </select>
-                                </div>
-                                <div style="display: flex;">
-                                    <label>C </label>
-                                    <select style="flex: 1" class="form-control">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                    </select>
-                                    <label> = </label>
-                                    <select style="flex: 0.2" class="form-control">
-                                        <option>Низкий</option>
-                                        <option>Средний</option>
-                                        <option>Высокий</option>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            ...</div>
-                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                            ...</div>
+                    </div>
+                    <div class="d-flex justify-content-center" style="padding-top: 1em; clear: left;">
+                        <label style="margin-right: 1em">A</label>
+                        <select style="flex: 1" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                        <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                        <select style="flex: 0.2" class="form-control">
+                            <option>Низкий</option>
+                            <option>Средний</option>
+                            <option>Высокий</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <label style="margin-right: 1em">B</label>
+                        <select style="flex: 1" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                        <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                        <select style="flex: 0.2" class="form-control">
+                            <option>Низкий</option>
+                            <option>Средний</option>
+                            <option>Высокий</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <label style="margin-right: 1em">C</label>
+                        <select style="flex: 1" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                        <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                        <select style="flex: 0.2" class="form-control">
+                            <option>Низкий</option>
+                            <option>Средний</option>
+                            <option>Высокий</option>
+                        </select>
                     </div>
                 </div>
-                <div style="flex: 0.1; display: flex; justify-content: space-around; margin: 2em">
-                    <button @click='leftPagination'>
-                        <<< </button>
-                            <p>[{{ numPagination }}]</p>
-                            <button @click='rightPagination'> >>> </button>
-                </div>
             </div>
-        </div>
-    </template>
 
-
-
-    <!--VVVVVVVVVVVVVV-->
-    <!-- считать с БД -->
-    <!--VVVVVVVVVVVVVV-->
+            <div>
+                <!--Конец блока конфигуратора -->
+            </div>
+</template>
+<!--VVVVVVVVVVVVVV-->
+<!-- считать с БД -->
+<!--VVVVVVVVVVVVVV-->
     <template id='authorizationRead-tmp'>
         <div>
             <button @click='load'>load</button>

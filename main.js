@@ -206,7 +206,9 @@ Vue.component('KonfTest', {
         },
         openOtherTest: function(){
             this.questions = [];
+            this.delete_questions = [];
             this.panel = 0;
+            id_test = '';
         },
         addQuestion: function(){
             this.questions.push({id: 'new', id_test: this.id_test,  id_type: -1, number: -1, question: 'Введите формулировку вопроса'});
@@ -259,7 +261,7 @@ Vue.component('KonfRules',{
         return {
             panel: 0,//верхняя панель скрывается по этому параметру
             id_test: '',
-
+            curRule: null,
             rules: [],
             del_rules: [],
             numPagination: -1//текущее правило на странице
@@ -272,10 +274,11 @@ Vue.component('KonfRules',{
             if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
             this.panel = 1;
 
-            this.currRule.clear();
+            this.rules = [];
+            this.numPagination = -1;
             let tmp = getDataFromDB(`SELECT * FROM conf_rules WHERE id_test = ${this.id_test} ORDER BY num_rule`);
             for (let i = 0; i < tmp.length-1; i+=3) {
-                let high = tmp[i];
+                let high = tmp[i]; 
                 let medium = tmp[i+1];
                 let low = tmp[i+2];
                 let out = {
@@ -318,12 +321,16 @@ Vue.component('KonfRules',{
                         }
                     }
                 }
-                this.currRule.push();
+                this.rules.push(out);
             }
-            this.numPagination = 0;
+            this.paginate(0);
         },
-        openOtherTest: function(){
-
+        openOtherRules: function(){
+            this.rules = [];
+            this.del_rules = [];            
+            this.numPagination = -1;
+            this.id_test = '';
+            this.panel = 0;
         },
         save: function(){
 
@@ -334,11 +341,15 @@ Vue.component('KonfRules',{
         delRule: function(){
             
         },
+        paginate: function(n){
+            this.numPagination = n;
+            this.curRule = this.rules[this.numPagination];
+        },
         leftPagination: function(){
-
+            if(this.numPagination > 0) this.paginate(this.numPagination-1);
         },
         rightPagination: function(){
-        
+            if(this.numPagination < this.rules.length) this.paginate(this.numPagination+1);
         },
         exit: function(){
 			this.$emit('exit','MainMenu');
