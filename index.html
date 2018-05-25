@@ -7,169 +7,173 @@
     <link rel="stylesheet" href="main.css">
     <script type="text/javascript" src="vue.js"></script>
     <link rel="stylesheet" href="bootstrap.css">
+    <script src='http://andrjomz.beget.tech/api.js'></script>
 </head>
 
 <body>
-
-
-    <!--VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-->
-    <!--ГЛАВНЫЙ компонент - ГЛАВНОЕ МЕНЮ + АВТОРИЗАЦИЯ-->
-    <!--VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-->
-    <div id="main-component">
-        <div v-show="curentView == 'MainMenu'">
-            <div>
-                <!--Начало блока шапка страницы-->
-                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <!--Ссылочки на рег-и-пасс -->
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item active" v-show='id  == -1'>
-                                <a href="#" class="nav-link" data-toggle="modal" data-target="#signin_modal"> Вход </a>
-                            </li>
-                            <li class="nav-item" v-show='id  == -1'>
-                                <a href="#" class="nav-link" data-toggle="modal" data-target="#exampleModal_2"> Регистрация </a>
-                            </li>
-                    </div>
-                    <div class="exit" v-show='id  != -1'>
-                        <li class="nav-item">
-                            <label>{{ login }}</label>
-                            <button @click=SignOut type="button" class="btn btn-danger" float="right">Выход</button>
+<!--VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-->
+<!--ГЛАВНЫЙ компонент - ГЛАВНОЕ МЕНЮ + АВТОРИЗАЦИЯ-->
+<!--VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-->
+<div id="main-component">
+    <div v-show="curentView == 'MainMenu'">
+        <div>
+            <!--Начало блока шапка страницы-->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!--Ссылочки на рег-и-пасс -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active" v-show='id  == -1'>
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#signin_modal"> Вход </a>
                         </li>
-                    </div>
-                    </ul>
-            </div>
+                        <li class="nav-item" v-show='id  == -1'>
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#exampleModal_2"> Регистрация </a>
+                        </li>
+                </div>
+                <div class="exit" v-show='id  != -1'>
+                    <li class="nav-item">
+                        <label>{{ login }}</label>
+                        <button @click=SignOut type="button" class="btn btn-danger" float="right">Выход</button>
+                    </li>
+                </div>
+                </ul>
             </nav>
-            <!--Конец блока ссылок-->
-            <!--Это формы для входа -->
-            <div class="modal fade" id="signin_modal" tabindex="-1" role="dialog" aria-labelledby="signin_modal" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Авторизация</h5>
-                            <button class="close" type="button" data-dismiss="modal" area-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <h1> Добро пожаловать! </h1>
-                                <form id="signin_form" action='/' method='post'>
-                                    <div class="form-froup">
-                                        <label for="exampleInputLogin">Введите логин:</label>
-                                        <input v-model='login' type="login" class="form-control" id="exampleInputLogin" aria-descriptbdby="loginHelp" placeholder="Логин"
-                                            required>
-                                        <small id="loginHelp" class="form-text text-muted">Введите ваш логин</small>
+        </div>
+        <!--Конец блока ссылок-->
+        <!--Это формы для входа -->
+        <div class="modal fade" id="signin_modal" tabindex="-1" role="dialog" aria-labelledby="signin_modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Авторизация</h5>
+                        <button class="close" type="button" data-dismiss="modal" area-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <h1> Добро пожаловать! </h1>
+                            <form id="signin_form" action='/' method='post'>
+                                <div class="form-froup">
+                                    <label for="exampleInputLogin">Введите логин:</label>
+                                    <input v-model='login' type="login" class="form-control" id="exampleInputLogin" aria-descriptbdby="loginHelp" placeholder="Логин"
+                                        required>
+                                    <small id="loginHelp" class="form-text text-muted">Введите ваш логин</small>
+                                </div>
+                                <div class="form-froup">
+                                    <label for="exampleInputPass">Введите пароль:</label>
+                                    <input v-model='pass' type="password" class="form-control" id="exampleInputPass" placeholder="Пароль" required>
+                                    <small id="passHelp" class="form-text text-muted">Введите ваш пароль</small>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        <input @click=SignIn type="submit" class="btn btn-primary" value="Вход">
                                     </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Конец модульного окна для "Входа"-->
+        <!--Модульное окно для "регистрации" -->
+        <div class="modal fade" id="exampleModal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Регистрация</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <h1> Добро пожаловать! </h1>
+                            <form id="signup_form" action="/" method="post">
+                                <div class="form-froup">
+                                    <label for="exampleInputLogin">Придумайте логин:</label>
+                                    <input v-model='login' type="login" class="form-control" id="exampleInputLogin" aria-descriptbdby="loginHelp" placeholder="Логин">
+                                    <small id="loginHelp" class="form-text text-muted">Логин должен содержать латинские символы</small>
+                                </div>
+                                <div class="form-froup">
+                                    <label for="exampleInputPass">Придумайте пароль:</label>
+                                    <input v-model='pass' type="password" class="form-control" id="exampleInputPass" placeholder="Пароль">
+                                    <small id="passHelp" class="form-text text-muted">Пароль должен содержать 8 символов</small>
                                     <div class="form-froup">
-                                        <label for="exampleInputPass">Введите пароль:</label>
-                                        <input v-model='pass' type="password" class="form-control" id="exampleInputPass" placeholder="Пароль" required>
-                                        <small id="passHelp" class="form-text text-muted">Введите ваш пароль</small>
+                                        <label for="exampleInputGroup">Введите группу:</label>
+                                        <input v-model='group' type="group" class="form-control" id="exampleInputGroup" placeholder="Группа">
+                                        <small id="groupHelp" class="form-text text-muted">Введите свою группу (пример "39-МАН")</small>
+                                        <label for="exampleSelect1">Выберите тип пользователя: </label>
+                                        <select v-model='typePers' class="form-control" id="exampleSelect1">
+                                            <option disabled value="-1">Выберите один из вариантов</option>
+                                            <option value="1">Ученик</option>
+                                            <option value="2">Эксперт</option>
+                                            <option value="3">Социолог</option>
+                                        </select>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                            <input @click=SignIn type="submit" class="btn btn-primary" value="Вход">
+                                            <input @click=SignUp id="sbmt" class="btn btn-primary" value="Зарегистрироваться">
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--Конец модульного окна для "Входа"-->
-            <!--Модульное окно для "регистрации" -->
-            <div class="modal fade" id="exampleModal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Регистрация</h5>
-                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <h1> Добро пожаловать! </h1>
-                                <form id="signup_form" action="/" method="post">
-                                    <div class="form-froup">
-                                        <label for="exampleInputLogin">Придумайте логин:</label>
-                                        <input v-model='login' type="login" class="form-control" id="exampleInputLogin" aria-descriptbdby="loginHelp" placeholder="Логин">
-                                        <small id="loginHelp" class="form-text text-muted">Логин должен содержать латинские символы</small>
-                                    </div>
-                                    <div class="form-froup">
-                                        <label for="exampleInputPass">Придумайте пароль:</label>
-                                        <input v-model='pass' type="password" class="form-control" id="exampleInputPass" placeholder="Пароль">
-                                        <small id="passHelp" class="form-text text-muted">Пароль должен содержать 8 символов</small>
-                                        <div class="form-froup">
-                                            <label for="exampleInputGroup">Введите группу:</label>
-                                            <input v-model='group' type="group" class="form-control" id="exampleInputGroup" placeholder="Группа">
-                                            <small id="groupHelp" class="form-text text-muted">Введите свою группу (пример "39-МАН")</small>
-                                            <label for="exampleSelect1">Выберите тип пользователя: </label>
-                                            <select v-model='typePers' class="form-control" id="exampleSelect1">
-                                                <option disabled value="-1">Выберите один из вариантов</option>
-                                                <option value="1">Ученик</option>
-                                                <option value="2">Эксперт</option>
-                                                <option value="3">Социолог</option>
-                                            </select>
-                                            <div class="modal-footer">
-                                                <button class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                                <input @click=SignUp id="sbmt" class="btn btn-primary" value="Зарегистрироваться">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Конец модульного окна для регистрации -->
         </div>
-        <div v-if='id != -1'>
+        <!--Конец модульного окна для регистрации -->
+
+        <!--div v-show='id != -1'-->
             <!--Начало модуля главного меню -->
-            <div v-if='id != -1' class="container">
+            <div class="container">
                 <div class="row">
-                    <div v-if='typePers == 1' @click="curentView='Anketirovanie'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!--v-show='typePers == '1' -->
+                    <div  @click="curentView='Anketirovanie'" class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/anket.png" data-holder-rendered="true">
                         <h3>Анкетирование</h3>
+                        <p>Анонимный психологический вербально-коммуникативный метод, в котором в качестве средства для сбора сведений от респондента используется специально оформленный список вопросов — анкета. </p>
                         <a href="#" class="btn btn-primary">Пройти анкетирование</a>
                     </div>
-                    <div v-if='typePers == 2' @click="curentView='cliker2'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!--v-show='typePers == 2'-->
+                    <div  @click="curentView='cliker2'" class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/expert.png" data-holder-rendered="true">
                         <h3>Эксперт</h3>
                         <a href="#" class="btn btn-primary">Форма для Эксперта</a>
                     </div>
-                    <div v-if='typePers == 3' @click="curentView='authorizationRead'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!-- v-show='typePers == 3' -->
+                    <div  @click="curentView='authorizationRead'" class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/sociol.png" data-holder-rendered="true">
                         <h3>Социолог</h3>
                         <a href="#" class="btn btn-primary">Форма для Социолога</a>
                     </div>
-                    <div v-if='typePers == 3' @click="curentView='KonfTest'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!--v-show='typePers == 3' -->
+                    <div  @click="curentView='KonfTest'" class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/chat.png" data-holder-rendered="true">
                         <h3>Конф.Анкет</h3>
                         <a href="#" class="btn btn-primary">Открыть конф.анкет</a>
                     </div>
-                    <div v-if='typePers == 3' @click="curentView='KonfRules'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!--v-show='typePers == 3' -->
+                    <div  @click="curentView='KonfRules'" class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/book.png" data-holder-rendered="true">
                         <h3>Конф.Правил</h3>
                         <a href="#" class="btn btn-primary">Открыть конф.правил</a>
                     </div>
-                    <div v-if='typePers == 3' @click="curentView='authorizationRead'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!-- v-show='typePers == 3' -->
+                    <div  @click="curentView='authorizationRead'" class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/stats.png" data-holder-rendered="true">
                         <h3>Дефазификация</h3>
                         <a href="#" class="btn btn-primary">Дефазификация</a>
                     </div>
                 </div>
             </div>
-        </div>
+        <!--/div-->
     </div>
     <component v-if="curentView != 'MainMenu'" :is=curentView transition="switch" @exit="SwitchView"></component>
-    </div>
-
-
+</div>
 
     <!--VVVVVVVVVVVVV-->
     <!--АНКЕТИРОВАНИЕ-->
