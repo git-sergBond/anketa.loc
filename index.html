@@ -34,10 +34,8 @@
                         </li>
                 </div>
                 <div class="exit" v-show='id  != -1'>
-                    <li class="nav-item">
-                        <label>{{ login }}</label>
-                        <button @click=SignOut type="button" class="btn btn-danger" float="right">Выход</button>
-                    </li>
+                    <label style="color: #eee" >LOGIN :: {{ login }} </label>
+                    <button @click=SignOut type="button" class="btn btn-danger" float="right">Выход</button>
                 </div>
                 </ul>
             </nav>
@@ -126,47 +124,44 @@
             </div>
         </div>
         <!--Конец модульного окна для регистрации -->
-
-        <!--div v-show='id != -1'-->
             <!--Начало модуля главного меню -->
-            <div class="container">
+            <div v-show='id != -1' class="container">
                 <div class="row">
-                    <!--v-show='typePers == '1' -->
-                    <div  @click="curentView='Anketirovanie'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <!-- v-show="typePers == '1'" -->
+                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/anket.png" data-holder-rendered="true">
                         <h3>Анкетирование</h3>
-                        <p>Анонимный психологический вербально-коммуникативный метод, в котором в качестве средства для сбора сведений от респондента используется специально оформленный список вопросов — анкета. </p>
-                        <a href="#" class="btn btn-primary">Пройти анкетирование</a>
+                        <a  @click="curentView='Anketirovanie'" class="btn btn-primary" style="color: #eee">Пройти анкетирование</a>
                     </div>
                     <!--v-show='typePers == 2'-->
-                    <div  @click="curentView='cliker2'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/expert.png" data-holder-rendered="true">
                         <h3>Эксперт</h3>
-                        <a href="#" class="btn btn-primary">Форма для Эксперта</a>
+                        <a @click="curentView='cliker2'" class="btn btn-primary" style="color: #eee" >Форма для Эксперта</a>
                     </div>
                     <!-- v-show='typePers == 3' -->
-                    <div  @click="curentView='authorizationRead'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/sociol.png" data-holder-rendered="true">
                         <h3>Социолог</h3>
-                        <a href="#" class="btn btn-primary">Форма для Социолога</a>
+                        <a @click="curentView='authorizationRead'" class="btn btn-primary" style="color: #eee" >Форма для Социолога</a>
                     </div>
                     <!--v-show='typePers == 3' -->
-                    <div  @click="curentView='KonfTest'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/chat.png" data-holder-rendered="true">
                         <h3>Конф.Анкет</h3>
-                        <a href="#" class="btn btn-primary">Открыть конф.анкет</a>
+                        <a @click="curentView='KonfTest'" class="btn btn-primary" style="color: #eee" >Открыть конф.анкет</a>
                     </div>
                     <!--v-show='typePers == 3' -->
-                    <div  @click="curentView='KonfRules'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/book.png" data-holder-rendered="true">
                         <h3>Конф.Правил</h3>
-                        <a href="#" class="btn btn-primary">Открыть конф.правил</a>
+                        <a @click="curentView='KonfRules'" class="btn btn-primary" style="color: #eee"> Открыть конф.правил</a>
                     </div>
                     <!-- v-show='typePers == 3' -->
-                    <div  @click="curentView='authorizationRead'" class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/stats.png" data-holder-rendered="true">
                         <h3>Дефазификация</h3>
-                        <a href="#" class="btn btn-primary">Дефазификация</a>
+                        <a  @click="curentView='authorizationRead'"  class="btn btn-primary" style="color: #eee">Дефазификация</a>
                     </div>
                 </div>
             </div>
@@ -174,34 +169,84 @@
     </div>
     <component v-if="curentView != 'MainMenu'" :is=curentView transition="switch" @exit="SwitchView"></component>
 </div>
-
-    <!--VVVVVVVVVVVVV-->
-    <!--АНКЕТИРОВАНИЕ-->
-    <!--VVVVVVVVVVVVV-->
-    <template id='Anketirovanie-tmp'>
-        <div>
-            <div v-show='panel == 0'>
-                <label>Введите ID теста</label>
-                <input v-model='id_test' size='8'>
-                <button @click='loadTest'>Загрузить</button>
-                <button @click='exit'>Выйти в главное меню</button>
+<!--VVVVVVVVVVVVV-->
+<!--АНКЕТИРОВАНИЕ-->
+<!--VVVVVVVVVVVVV-->
+<template id='Anketirovanie-tmp'>
+    <div>
+        <div v-show='panel == 0'>
+            <label>Введите ID теста</label>
+            <input v-model='id_test' size='8'>
+            <button @click='loadTest'>Загрузить</button>
+            <button @click='exit'>Выйти в главное меню</button>
+        </div>
+        <div v-show='panel == 1'>
+            <button @click='exit'>Выйти в главное меню</button>
+            <button @click='save'>Сохранить результат</button>
+            <button @click='openOtherTest'>Загрузить другой тест</button>
+        </div>
+        <div v-for='question in questions'>
+            <div>
+                <p>{{ question.question }}</p>
             </div>
-            <div v-show='panel == 1'>
-                <button @click='exit'>Выйти в главное меню</button>
-                <button @click='save'>Сохранить результат</button>
-                <button @click='openOtherTest'>Загрузить другой тест</button>
+            <div>
+                <input v-if='question.id_type==1' v-model='question.val' type="checkbox">
+                <input v-if='question.id_type==2' v-model='question.val' type="range" min="2" max="5" step="1" value="5"> {{question.val}}
             </div>
-            <div v-for='question in questions'>
-                <div>
-                    <p>{{ question.question }}</p>
+        </div>
+    </div>
+    <!--Начало блока шапка страницы-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!--Кнопки на navbar -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <div class="main.menu">
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-danger">Главное меню</button>
+                        <label style="color: #eee"> ВВедите ID анкеты:</label>
+                        <input></input>
+                        <button type="button" class="btn btn-danger">Загрузить</button>
+                        <button type="button" class="btn btn-danger">Сохранить результат</button>
+                        <button type="button" class="btn btn-danger">Загрузить другой тест</button>
+                    </li>
                 </div>
-                <div>
-                    <input v-if='question.id_type==1' v-model='question.val' type="checkbox">
-                    <input v-if='question.id_type==2' v-model='question.val' type="range" min="2" max="5" step="1" value="5"> {{question.val}}
+            </ul>
+        </div>
+    </nav>
+    <!--Конец блока кнопок-->
+
+    <!--Начало блока анкеты-->
+    <div class="container" style="padding-top: 50px; font-size: 1.5rem">
+        <div class="row">
+            <div class="col-lg-12 offset-lg-2 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-8">
+                        Положительное отношение к специальности (направлению)?
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" value="">
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        Уровень практических навыков (определяется ср. баллом оценок)
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="range" min="2" max="5" step="1" value="5"></input>
+                    </div>
                 </div>
             </div>
         </div>
-    </template>
+    </div>
+
+    <!--Конец блока анекты-->
+</template>
 
 
 
