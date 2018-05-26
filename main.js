@@ -216,7 +216,53 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     this.panel = 0;
                 },
                 save: function () {
-                    
+                    this.rules.forEach(el => {
+                        if(el.high.id == 'new'){
+                            /*
+                            if (el.id_type == -1) { alert('Не был выбран тип вопроса'); return; }
+                            let sql = `INSERT INTO questions (\`id_type\`, \`id_test\`, \`question\`) VALUES ( ${el.id_type}, ${el.id_test}, '${el.question}' )`;
+                            let id = insertDataInDB(sql);
+                            if (id == -1) { alert('Ошибка вставки'); return; }
+                            el.id = id;*/
+                        } else {
+                            sql = `UPDATE conf_rules SET conclusion= '${el.conclusion}', num_rule = ${el.num}, \
+                                a = ${el.a}, b = ${el.b}, c = ${el.c}, d = ${el.d},\
+                                e = ${el.e}, f = ${el.f}, g = ${el.g}, h = ${el.h}`;
+                            let id = insertDataInDB(sql + `, type_kof = 1, kof = ${el.high.kof}, \
+                            id_type = ${el.high.type_condition}, \ 
+                            id_A = ${el.high.id_A}, id_A_val = ${el.high.A_val},\
+                            id_B = ${el.high.id_B}, id_B_val = ${el.high.B_val},\
+                            id_C = ${el.high.id_C}, id_C_val = ${el.high.C_val} \
+                            WHERE id = ${el.high.id}`);
+                            if (id == -1) { alert('Ошибка обновления высокого'); return; }
+                               
+                            id = insertDataInDB(sql + `, type_kof = 2, kof = ${el.medium.kof}, \ 
+                            id_type = ${el.medium.type_condition}, \
+                            id_A = ${el.medium.id_A}, id_A_val = ${el.medium.A_val},\
+                            id_B = ${el.medium.id_B}, id_B_val = ${el.medium.B_val},\
+                            id_C = ${el.medium.id_C}, id_C_val = ${el.medium.C_val} \
+                            WHERE id = ${el.medium.id}`);
+                            if (id == -1) { alert('Ошибка обновления среднего'); return; }
+
+                            id = insertDataInDB(sql + `, type_kof = 3, kof = ${el.medium.kof}, \ 
+                            id_type = ${el.low.type_condition}, \
+                            id_A = ${el.low.id_A}, id_A_val = ${el.low.A_val},\
+                            id_B = ${el.low.id_B}, id_B_val = ${el.low.B_val},\
+                            id_C = ${el.low.id_C}, id_C_val = ${el.low.C_val} \
+                            WHERE id = ${el.low.id}`);
+                            if (id == -1) { alert('Ошибка обновления низкого'); return; }
+                        }
+                    });
+                    /*
+                    let errDel = false;
+                    this.rules.forEach(id_del => {
+                        if (id_del != 'new') {
+                            let sql = "DELETE FROM questions WHERE id = " + id_del;
+                            let id = insertDataInDB(sql);
+                            if (id == -1) { alert('Ошибка удаления'); errDel = true; return; }
+                        }
+                    });
+                    if (!errDel) this.delete_questions = [];*/
                 },
                 addRule: function () {
                     let out = {

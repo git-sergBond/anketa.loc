@@ -391,21 +391,19 @@
             <!--Конец блока конфигуратора -->
             <!--Значения для НИЗ/СРЕД/ВЫСОКИЙ-->
             <div style="margin: 1m">
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" role="tab" aria-controls="nav-low" aria-selected="true">Низкий</a>
-                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" role="tab" aria-controls="nav-medium" aria-selected="false">Средний</a>
-                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" role="tab" aria-controls="nav-high" aria-selected="false">Высокий</a>
-                    </div>
-                </nav>
-                <div class="tab-content" id="nav-tabContent" style="flex: 1; font-size: 1.5rem; margin: 0.7em">
-                    <div class="tab-pane fade show active" id="nav-low" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="nav nav-tabs" role="tablist">
+                    <a class="nav-item nav-link active" data-toggle="tab" role="tab" aria-selected="true" href='#tab_low'>Низкий</a>
+                    <a class="nav-item nav-link" data-toggle="tab" role="tab" aria-selected="false" href='#tab_medium'>Средний</a>
+                    <a class="nav-item nav-link" data-toggle="tab" role="tab" aria-selected="false" href='#tab_high'>Высокий</a>
+                </div>
+                <div class="tab-content" style="flex: 1; font-size: 1.5rem; margin: 0.7em">
+                    <div class="tab-pane fade in active" id="tab_low" role="tabpanel">
                         <div style="display: flex; justify-content: space-between; width: 100%;">
-                            <div class="kof_opredelen">
+                            <div>
                                 <label style="float: left; margin-right: 1em ">Коэф.определенности:</label>
-                                <input v-model='curRule.low.kof' class="form-control" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 10em">
+                                <input v-model='curRule.low.kof' class="form-control" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 5em">
                             </div>
-                            <div class="type_condition">
+                            <div>
                                 <label for="exampleInputCond" style="float: left; margin-right: 1em ">Тип условия:</label>
                                 <select v-model='curRule.low.type_condition' class="form-control" style="width: 10em">
                                     <option value="1">A & B & C</option>
@@ -428,7 +426,7 @@
                                 </select>
                             </div>
                             <div class="d-flex justify-content-center" style="clear: left;">
-                                <label style="margin-right: 1em">A</label>
+                                <label style="margin-right: 1em">B</label>
                                 <select v-model='curRule.low.id_B' style="flex: 1" class="form-control">
                                     <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
                                 </select>
@@ -438,7 +436,7 @@
                                 </select>
                             </div>
                             <div class="d-flex justify-content-center" style="clear: left;">
-                                <label style="margin-right: 1em">A</label>
+                                <label style="margin-right: 1em">C</label>
                                 <select v-model='curRule.low.id_C' style="flex: 1" class="form-control">
                                     <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
                                 </select>
@@ -497,7 +495,202 @@
                                     </div>
                             </div>
                     </div>
-                    
+                    <div class="tab-pane fade in active" id="tab_medium" role="tabpanel">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <div>
+                                    <label style="float: left; margin-right: 1em ">Коэф.определенности:</label>
+                                    <input v-model='curRule.medium.kof' class="form-control" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 5em">
+                                </div>
+                                <div>
+                                    <label for="exampleInputCond" style="float: left; margin-right: 1em ">Тип условия:</label>
+                                    <select v-model='curRule.medium.type_condition' class="form-control" style="width: 10em">
+                                        <option value="1">A & B & C</option>
+                                        <option value="2">A & (B || C)</option>
+                                        <option value="3">(A & B) || C</option>
+                                        <option value="4">A || B || C</option>
+                                        <option value="5">A & B</option>
+                                        <option value="6">A || B</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center" style="clear: left;">
+                                    <label style="margin-right: 1em">A</label>
+                                    <select v-model='curRule.medium.id_A' style="flex: 1" class="form-control">
+                                        <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                    </select>
+                                    <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                    <select v-model='curRule.medium.A_val' style="flex: 0.2" class="form-control">
+                                        <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-center" style="clear: left;">
+                                    <label style="margin-right: 1em">A</label>
+                                    <select v-model='curRule.medium.id_B' style="flex: 1" class="form-control">
+                                        <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                    </select>
+                                    <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                    <select v-model='curRule.medium.B_val' style="flex: 0.2" class="form-control">
+                                        <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-center" style="clear: left;">
+                                    <label style="margin-right: 1em">A</label>
+                                    <select v-model='curRule.medium.id_C' style="flex: 1" class="form-control">
+                                        <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                    </select>
+                                    <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                    <select v-model='curRule.medium.C_val' style="flex: 0.2" class="form-control">
+                                        <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="tab-pane fade" id="nav-medium" role="tabpanel" aria-labelledby="nav-home-tab">
+                                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                                        <div class="kof_opredelen">
+                                            <label style="float: left; margin-right: 1em ">Коэф.определенности:</label>
+                                            <input v-model='curRule.medium.kof' class="form-control" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 10em">
+                                        </div>
+                                        <div class="type_condition">
+                                            <label for="exampleInputCond" style="float: left; margin-right: 1em ">Тип условия:</label>
+                                            <select v-model='curRule.medium.type_condition' class="form-control" style="width: 10em">
+                                                <option value="1">A & B & C</option>
+                                                <option value="2">A & (B || C)</option>
+                                                <option value="3">(A & B) || C</option>
+                                                <option value="4">A || B || C</option>
+                                                <option value="5">A & B</option>
+                                                <option value="6">A || B</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center" style="clear: left;">
+                                            <label style="margin-right: 1em">A</label>
+                                            <select v-model='curRule.medium.id_A' style="flex: 1" class="form-control">
+                                                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                            </select>
+                                            <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                            <select v-model='curRule.medium.A_val' style="flex: 0.2" class="form-control">
+                                                <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex justify-content-center" style="clear: left;">
+                                            <label style="margin-right: 1em">A</label>
+                                            <select v-model='curRule.medium.id_B' style="flex: 1" class="form-control">
+                                                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                            </select>
+                                            <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                            <select v-model='curRule.medium.B_val' style="flex: 0.2" class="form-control">
+                                                <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex justify-content-center" style="clear: left;">
+                                            <label style="margin-right: 1em">A</label>
+                                            <select v-model='curRule.medium.id_C' style="flex: 1" class="form-control">
+                                                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                            </select>
+                                            <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                            <select v-model='curRule.medium.C_val' style="flex: 0.2" class="form-control">
+                                                <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                            </select>
+                                        </div>
+                                </div>
+                    </div>
+                    <div class="tab-pane fade in active" id="tab_high" role="tabpanel">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <div>
+                                    <label style="float: left; margin-right: 1em ">Коэф.определенности:</label>
+                                    <input v-model='curRule.high.kof' class="form-control" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 5em">
+                                </div>
+                                <div>
+                                    <label for="exampleInputCond" style="float: left; margin-right: 1em ">Тип условия:</label>
+                                    <select v-model='curRule.high.type_condition' class="form-control" style="width: 10em">
+                                        <option value="1">A & B & C</option>
+                                        <option value="2">A & (B || C)</option>
+                                        <option value="3">(A & B) || C</option>
+                                        <option value="4">A || B || C</option>
+                                        <option value="5">A & B</option>
+                                        <option value="6">A || B</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center" style="clear: left;">
+                                    <label style="margin-right: 1em">A</label>
+                                    <select v-model='curRule.high.id_A' style="flex: 1" class="form-control">
+                                        <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                    </select>
+                                    <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                    <select v-model='curRule.high.A_val' style="flex: 0.2" class="form-control">
+                                        <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-center" style="clear: left;">
+                                    <label style="margin-right: 1em">A</label>
+                                    <select v-model='curRule.high.id_B' style="flex: 1" class="form-control">
+                                        <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                    </select>
+                                    <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                    <select v-model='curRule.high.B_val' style="flex: 0.2" class="form-control">
+                                        <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-center" style="clear: left;">
+                                    <label style="margin-right: 1em">A</label>
+                                    <select v-model='curRule.high.id_C' style="flex: 1" class="form-control">
+                                        <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                    </select>
+                                    <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                    <select v-model='curRule.high.C_val' style="flex: 0.2" class="form-control">
+                                        <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="tab-pane fade" id="nav-high" role="tabpanel" aria-labelledby="nav-home-tab">
+                                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                                        <div class="kof_opredelen">
+                                            <label style="float: left; margin-right: 1em ">Коэф.определенности:</label>
+                                            <input v-model='curRule.high.kof' class="form-control" aria-descriptbdby="KofHelp" placeholder="Коэф.опред" style="width: 10em">
+                                        </div>
+                                        <div class="type_condition">
+                                            <label for="exampleInputCond" style="float: left; margin-right: 1em ">Тип условия:</label>
+                                            <select v-model='curRule.high.type_condition' class="form-control" style="width: 10em">
+                                                <option value="1">A & B & C</option>
+                                                <option value="2">A & (B || C)</option>
+                                                <option value="3">(A & B) || C</option>
+                                                <option value="4">A || B || C</option>
+                                                <option value="5">A & B</option>
+                                                <option value="6">A || B</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center" style="clear: left;">
+                                            <label style="margin-right: 1em">A</label>
+                                            <select v-model='curRule.high.id_A' style="flex: 1" class="form-control">
+                                                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                            </select>
+                                            <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                            <select v-model='curRule.high.A_val' style="flex: 0.2" class="form-control">
+                                                <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex justify-content-center" style="clear: left;">
+                                            <label style="margin-right: 1em">A</label>
+                                            <select v-model='curRule.high.id_B' style="flex: 1" class="form-control">
+                                                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                            </select>
+                                            <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                            <select v-model='curRule.high.B_val' style="flex: 0.2" class="form-control">
+                                                <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex justify-content-center" style="clear: left;">
+                                            <label style="margin-right: 1em">A</label>
+                                            <select v-model='curRule.high.id_C' style="flex: 1" class="form-control">
+                                                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                                            </select>
+                                            <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
+                                            <select v-model='curRule.high.C_val' style="flex: 0.2" class="form-control">
+                                                <option v-for='item in power' :value='item.id'>{{ item.name }}</option>
+                                            </select>
+                                        </div>
+                                </div>
+                    </div>
                 </div>
             </div>
 
