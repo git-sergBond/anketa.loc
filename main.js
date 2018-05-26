@@ -296,6 +296,9 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                         this.del_rules.push(el.id);
                     });
                     this.rules.splice(this.numPagination, 1);
+                    for (let index = this.numPagination; index < this.rules.length; index++) {
+                        this.rules[index].num--;
+                    }
                     if (this.numPagination == 0) {
                         this.rightPagination();
                     } else {
