@@ -339,10 +339,51 @@ Vue.component('KonfRules',{
 
         },
         addRule: function(){
-
+            let out = {
+                num: 1,
+                conclusion: high.conclusion,
+                a: high.a,
+                b: high.b,
+                c: high.c,
+                d: high.d,
+                e: high.e,
+                f: high.f,
+                g: high.g,
+                h: high.h,
+                high: {
+                    id: high.id,
+                    kof: high.kof,
+                    type_condition: high.type_kof,
+                    id_A: high.id_A, A_val: high.id_A_val,
+                    id_B: high.id_B, B_val: high.id_B_val,
+                    id_C: high.id_C, C_val: high.id_C_val
+                },
+                medium: {
+                    id: medium.id,
+                    kof: medium.kof,
+                    type_condition: medium.type_kof,
+                    id_A: medium.id_A, A_val: medium.id_A_val,
+                    id_B: medium.id_B, B_val: medium.id_B_val,
+                    id_C: medium.id_C, C_val: medium.id_C_val
+                },
+                low: {
+                    id: low.id,
+                    kof: low.kof,
+                    type_condition: low.type_kof,
+                    id_A: low.id_A, A_val: low.id_A_val,
+                    id_B: low.id_B, B_val: low.id_B_val,
+                    id_C: low.id_C, C_val: low.id_C_val
+                }
+            }
         },
         delRule: function(){
-            
+            this.del_rules.push(this.rules[this.numPagination].id);
+            this.rules.splice(this.numPagination,1);
+            if(this.numPagination == 0){
+                this.rightPagination();
+            }else{
+                this.leftPagination();
+            }
         },
         listPage: function(n){
             this.curRule = this.rules[n];
