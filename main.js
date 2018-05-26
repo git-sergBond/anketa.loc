@@ -145,9 +145,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     id_test: '',
                     curRule: null,
                     rules: [],
-                    lingvoVars: [],
                     del_rules: [],
-                    power: [{ id: 1, name: 'Низкий' }, { id: 2, name: 'Средний' }, { id: 3, name: 'Высокий' }],
                     numPagination: -1//текущее правило на странице
                 }
             },
@@ -203,8 +201,6 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                         }
                         this.rules.push(out);
                     }
-                    this.lingvoVars = [];
-                    this.lingvoVars = getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.id_test);
                     this.listPage(0);
                 },
                 openOtherRules: function () {
@@ -325,6 +321,20 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 },
                 exit: function () {
                     this.$emit('exit', 'MainMenu');
+                }
+            },
+            components:{
+                'forpowertabs':{
+                    name: 'forpowertabs',
+                    props: ['powerprop','idtestprop'],
+                    data: function(){
+                        return {
+                            lingvoVars: getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.idtestprop),
+                            power: [{ id: 1, name: 'Низкий' }, { id: 2, name: 'Средний' }, { id: 3, name: 'Высокий' }],
+                            condition: [{id: 1, name: 'A & B & C'},{id: 2, name: 'A & (B || C)'},{id: 3, name: '(A & B) || C'},{id: 4, name: 'A || B || C'},{id: 5, name: 'A & B'},{id: 6, name: 'A || B'}]
+                        }
+                    },
+                    template: '#forpowertabs-tmp'
                 }
             },
             template: '#KonfRules-tmp'
