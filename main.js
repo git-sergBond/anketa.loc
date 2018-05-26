@@ -174,30 +174,35 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             f: high.f,
                             g: high.g,
                             h: high.h,
-                            high: {
-                                id: high.id,
-                                kof: high.kof,
-                                type_condition: high.type_kof,
-                                id_A: high.id_A, A_val: high.id_A_val,
-                                id_B: high.id_B, B_val: high.id_B_val,
-                                id_C: high.id_C, C_val: high.id_C_val
-                            },
-                            medium: {
-                                id: medium.id,
-                                kof: medium.kof,
-                                type_condition: medium.type_kof,
-                                id_A: medium.id_A, A_val: medium.id_A_val,
-                                id_B: medium.id_B, B_val: medium.id_B_val,
-                                id_C: medium.id_C, C_val: medium.id_C_val
-                            },
-                            low: {
-                                id: low.id,
-                                kof: low.kof,
-                                type_condition: low.type_kof,
-                                id_A: low.id_A, A_val: low.id_A_val,
-                                id_B: low.id_B, B_val: low.id_B_val,
-                                id_C: low.id_C, C_val: low.id_C_val
-                            }
+                            power: [
+                                {
+                                    type_kof: low.type_kof,
+                                    id: low.id,
+                                    kof: low.kof,
+                                    type_condition: low.type_kof,
+                                    id_A: low.id_A, A_val: low.id_A_val,
+                                    id_B: low.id_B, B_val: low.id_B_val,
+                                    id_C: low.id_C, C_val: low.id_C_val
+                                },
+                                {
+                                    type_kof: medium.type_kof,
+                                    id: medium.id,
+                                    kof: medium.kof,
+                                    type_condition: medium.type_kof,
+                                    id_A: medium.id_A, A_val: medium.id_A_val,
+                                    id_B: medium.id_B, B_val: medium.id_B_val,
+                                    id_C: medium.id_C, C_val: medium.id_C_val
+                                },
+                                {
+                                    type_kof: high.type_kof,
+                                    id: high.id,
+                                    kof: high.kof,
+                                    type_condition: high.type_kof,
+                                    id_A: high.id_A, A_val: high.id_A_val,
+                                    id_B: high.id_B, B_val: high.id_B_val,
+                                    id_C: high.id_C, C_val: high.id_C_val
+                                }
+                            ]
                         }
                         this.rules.push(out);
                     }
@@ -213,7 +218,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 },
                 save: function () {
                     this.rules.forEach(el => {
-                        if(el.high.id == 'new'){
+                        if(el.indicatorNew == 'new'){
                             /*
                             if (el.id_type == -1) { alert('Не был выбран тип вопроса'); return; }
                             let sql = `INSERT INTO questions (\`id_type\`, \`id_test\`, \`question\`) VALUES ( ${el.id_type}, ${el.id_test}, '${el.question}' )`;
@@ -221,32 +226,24 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             if (id == -1) { alert('Ошибка вставки'); return; }
                             el.id = id;*/
                         } else {
-                            sql = `UPDATE conf_rules SET conclusion= '${el.conclusion}', num_rule = ${el.num}, \
+                            let tmp_sql = `UPDATE conf_rules SET conclusion= '${el.conclusion}', num_rule = ${el.num}, \
                                 a = ${el.a}, b = ${el.b}, c = ${el.c}, d = ${el.d},\
                                 e = ${el.e}, f = ${el.f}, g = ${el.g}, h = ${el.h}`;
-                            let id = insertDataInDB(sql + `, type_kof = 1, kof = ${el.high.kof}, \
-                            id_type = ${el.high.type_condition}, \ 
-                            id_A = ${el.high.id_A}, id_A_val = ${el.high.A_val},\
-                            id_B = ${el.high.id_B}, id_B_val = ${el.high.B_val},\
-                            id_C = ${el.high.id_C}, id_C_val = ${el.high.C_val} \
-                            WHERE id = ${el.high.id}`);
-                            if (id == -1) { alert('Ошибка обновления высокого'); return; }
-                               
-                            id = insertDataInDB(sql + `, type_kof = 2, kof = ${el.medium.kof}, \ 
-                            id_type = ${el.medium.type_condition}, \
-                            id_A = ${el.medium.id_A}, id_A_val = ${el.medium.A_val},\
-                            id_B = ${el.medium.id_B}, id_B_val = ${el.medium.B_val},\
-                            id_C = ${el.medium.id_C}, id_C_val = ${el.medium.C_val} \
-                            WHERE id = ${el.medium.id}`);
-                            if (id == -1) { alert('Ошибка обновления среднего'); return; }
-
-                            id = insertDataInDB(sql + `, type_kof = 3, kof = ${el.medium.kof}, \ 
-                            id_type = ${el.low.type_condition}, \
-                            id_A = ${el.low.id_A}, id_A_val = ${el.low.A_val},\
-                            id_B = ${el.low.id_B}, id_B_val = ${el.low.B_val},\
-                            id_C = ${el.low.id_C}, id_C_val = ${el.low.C_val} \
-                            WHERE id = ${el.low.id}`);
-                            if (id == -1) { alert('Ошибка обновления низкого'); return; }
+                            let sql_power = function(pow){
+                                return `, type_kof = ${pow.type_kof}, kof = ${pow.kof}, \
+                                id_type = ${pow.type_condition}, \ 
+                                id_A = ${pow.id_A}, id_A_val = ${pow.A_val},\
+                                id_B = ${pow.id_B}, id_B_val = ${pow.B_val},\
+                                id_C = ${pow.id_C}, id_C_val = ${pow.C_val} \
+                                WHERE id = ${pow.id}`; 
+                            }
+                            console.log(el);
+                            console.log(el.power);
+                            console.log(el.power[0]);
+                            el.power.forEach(el1 => {
+                                if (insertDataInDB(tmp_sql + sql_power(el1)) == -1) { 
+                                    alert('Ошибка обновления'); return; }
+                            });
                         }
                     });
                     /*
@@ -262,6 +259,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 },
                 addRule: function () {
                     let out = {
+                        indicatorNew: 'new',
                         num: 1,
                         conclusion: '',
                         a: 0,
@@ -273,7 +271,6 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                         g: 0,
                         h: 0,
                         high: {
-                            id: 'new',
                             kof: 0,
                             type_condition: 0,
                             id_A: 0, A_val: 0,
@@ -281,7 +278,6 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             id_C: 0, C_val: 0
                         },
                         medium: {
-                            id: 'new',
                             kof: 0,
                             type_condition: 0,
                             id_A: 0, A_val: 0,
@@ -289,7 +285,6 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             id_C: 0, C_val: 0
                         },
                         low: {
-                            id: 'new',
                             kof: 0,
                             type_condition: 0,
                             id_A: 0, A_val: 0,
