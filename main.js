@@ -237,25 +237,21 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                                 id_C = ${pow.id_C}, id_C_val = ${pow.C_val} \
                                 WHERE id = ${pow.id}`; 
                             }
-                            console.log(el);
-                            console.log(el.power);
-                            console.log(el.power[0]);
                             el.power.forEach(el1 => {
                                 if (insertDataInDB(tmp_sql + sql_power(el1)) == -1) { 
                                     alert('Ошибка обновления'); return; }
                             });
                         }
                     });
-                    /*
                     let errDel = false;
-                    this.rules.forEach(id_del => {
+                    this.del_rules.forEach(id_del => {
                         if (id_del != 'new') {
-                            let sql = "DELETE FROM questions WHERE id = " + id_del;
+                            let sql = "DELETE FROM conf_rules WHERE id = " + id_del;
                             let id = insertDataInDB(sql);
                             if (id == -1) { alert('Ошибка удаления'); errDel = true; return; }
                         }
                     });
-                    if (!errDel) this.delete_questions = [];*/
+                    if (!errDel) this.del_rules = [];
                 },
                 addRule: function () {
                     let out = {
@@ -296,7 +292,9 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     this.listPage(this.rules.length-1);
                 },
                 delRule: function () {
-                    this.del_rules.push(this.rules[this.numPagination].id);
+                    this.rules[this.numPagination].power.forEach(el => {
+                        this.del_rules.push(el.id);
+                    });
                     this.rules.splice(this.numPagination, 1);
                     if (this.numPagination == 0) {
                         this.rightPagination();
