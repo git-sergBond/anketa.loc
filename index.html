@@ -127,38 +127,32 @@
             <!--Начало модуля главного меню -->
             <div v-show='id != -1' class="container">
                 <div class="row">
-                    <!-- v-show="typePers == '1'" -->
-                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div v-show="typePers == '1'"  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/anket.png" data-holder-rendered="true">
                         <h3>Анкетирование</h3>
                         <a  @click="curentView='Anketirovanie'" class="btn btn-primary" style="color: #eee">Пройти анкетирование</a>
                     </div>
-                    <!--v-show='typePers == 2'-->
-                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div v-show='typePers == 2'  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/expert.png" data-holder-rendered="true">
                         <h3>Эксперт</h3>
                         <a @click="curentView='cliker2'" class="btn btn-primary" style="color: #eee" >Форма для Эксперта</a>
                     </div>
-                    <!-- v-show='typePers == 3' -->
-                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div v-show='typePers == 3'  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/sociol.png" data-holder-rendered="true">
                         <h3>Социолог</h3>
                         <a @click="curentView='authorizationRead'" class="btn btn-primary" style="color: #eee" >Форма для Социолога</a>
                     </div>
-                    <!--v-show='typePers == 3' -->
-                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div v-show='typePers == 3'  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/chat.png" data-holder-rendered="true">
                         <h3>Конф.Анкет</h3>
                         <a @click="curentView='KonfTest'" class="btn btn-primary" style="color: #eee" >Открыть конф.анкет</a>
                     </div>
-                    <!--v-show='typePers == 3' -->
-                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div v-show='typePers == 3'  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/book.png" data-holder-rendered="true">
                         <h3>Конф.Правил</h3>
                         <a @click="curentView='KonfRules'" class="btn btn-primary" style="color: #eee"> Открыть конф.правил</a>
                     </div>
-                    <!-- v-show='typePers == 3' -->
-                    <div   class="col-lg-4 col-sm-12 text-center block-menu-item">
+                    <div v-show='typePers == 3'  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/stats.png" data-holder-rendered="true">
                         <h3>Дефазификация</h3>
                         <a  @click="curentView='authorizationRead'"  class="btn btn-primary" style="color: #eee">Дефазификация</a>
