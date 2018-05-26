@@ -82,7 +82,7 @@ function insertDataInDB(sqlquery){//делает sql INSERT в БД и возв�
  */
 var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНОЕ МЕНЮ + АВТОРИЗАЦИЯ
     el: '#main-component',
-	data:{
+    data: {
         id: -1,//по этому полю можно опред авторизован ли чел, если -1 то нет иначк авторизован
 
         login: '',
@@ -93,43 +93,195 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
         txt: 0,//вроде нигде больше не юзал, кроме проверки JSON
 
         curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
-	},
-	methods:{
-		SwitchView: function(view){//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
-			this.curentView = view;
+    },
+    methods: {
+        SwitchView: function (view) {//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
+            this.curentView = view;
         },
-        SignIn: function(){//ВХОД
+        SignIn: function () {//ВХОД
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}' AND password = '${this.pass}'`);
-            if(isValidLogin["0"]["count(*)"] > 0){
-                let tmp  = getDataFromDB(`SELECT * FROM authorization WHERE login='${this.login}'`);
+            if (isValidLogin["0"]["count(*)"] > 0) {
+                let tmp = getDataFromDB(`SELECT * FROM authorization WHERE login='${this.login}'`);
                 this.id = tmp["0"]["id"];
                 this.typePers = tmp["0"]["id_type_person"];
                 alert("Авторизация  пройдена");
-            }else{
+            } else {
                 this.id = -1;
                 alert("Авторизация не пройдена");
             }
         },
-        SignUp: function() {//РЕГИСТРАЦИЯ
-            if(this.login == '') {alert("Вы не ввели логин, пожалуйста, заполните соответствующее поле"); return;}
-            if(this.pass == '') {alert("Вы не ввели пароль, пожалуйста, заполните соответствующее поле"); return;}
-            if(this.typePers == -1){alert("Вы не выбрали тип пользователя"); return;}
-            if(this.group == '') {alert("Поле группа, осталось пустым, пожалуйста. заполните его");return;}
+        SignUp: function () {//РЕГИСТРАЦИЯ
+            if (this.login == '') { alert("Вы не ввели логин, пожалуйста, заполните соответствующее поле"); return; }
+            if (this.pass == '') { alert("Вы не ввели пароль, пожалуйста, заполните соответствующее поле"); return; }
+            if (this.typePers == -1) { alert("Вы не выбрали тип пользователя"); return; }
+            if (this.group == '') { alert("Поле группа, осталось пустым, пожалуйста. заполните его"); return; }
             let isValidLogin = getDataFromDB(`SELECT count(*) FROM authorization WHERE login='${this.login}'`);
-            if(isValidLogin["0"]["count(*)"] > 0){ alert("Такой логин уже занят, придумайте другой"); return; }
+            if (isValidLogin["0"]["count(*)"] > 0) { alert("Такой логин уже занят, придумайте другой"); return; }
             this.id = insertDataInDB(`INSERT INTO authorization (login, password, id_type_person, \`group\`) VALUES ('${this.login}', '${this.pass}', '${this.typePers}','${this.group}')`);
             alert("Вы зарегистрированы");
         },
-        SignOut: function() {//РАЗЛОГИНИТЬСЯ
+        SignOut: function () {//РАЗЛОГИНИТЬСЯ
             this.clearData();
             alert("Вы вышли");
         },
-        clearData: function(){
+        clearData: function () {
             this.id = -1;
             this.login = '';
             this.pass = '';
             this.group = '';
             this.typePers = '-1';
+        }
+    },
+    components: {
+        'KonfRules': {
+            /*
+             *************************
+             *   КОНФИГУРАТОР ПРАВИЛ
+             ************************
+             */
+            data: function () {
+                return {
+                    panel: 0,//верхняя панель скрывается по этому параметру
+                    id_test: '',
+                    curRule: null,
+                    rules: [],
+                    lingvoVars: [],
+                    del_rules: [],
+                    power: [{ id: 1, name: 'Низкий' }, { id: 2, name: 'Средний' }, { id: 3, name: 'Высокий' }],
+                    numPagination: -1//текущее правило на странице
+                }
+            },
+            methods: {
+                loadRules: function () {
+                    if (this.id_test == '') return;
+                    let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
+                    if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
+                    this.panel = 1;
+
+                    this.rules = [];
+                    this.numPagination = -1;
+                    let tmp = getDataFromDB(`SELECT * FROM conf_rules WHERE id_test = ${this.id_test} ORDER BY num_rule`);
+                    for (let i = 0; i < tmp.length - 1; i += 3) {
+                        let high = tmp[i];
+                        let medium = tmp[i + 1];
+                        let low = tmp[i + 2];
+                        let out = {
+                            num: high.num_rule,
+                            conclusion: high.conclusion,
+                            a: high.a,
+                            b: high.b,
+                            c: high.c,
+                            d: high.d,
+                            e: high.e,
+                            f: high.f,
+                            g: high.g,
+                            h: high.h,
+                            high: {
+                                id: high.id,
+                                kof: high.kof,
+                                type_condition: high.type_kof,
+                                id_A: high.id_A, A_val: high.id_A_val,
+                                id_B: high.id_B, B_val: high.id_B_val,
+                                id_C: high.id_C, C_val: high.id_C_val
+                            },
+                            medium: {
+                                id: medium.id,
+                                kof: medium.kof,
+                                type_condition: medium.type_kof,
+                                id_A: medium.id_A, A_val: medium.id_A_val,
+                                id_B: medium.id_B, B_val: medium.id_B_val,
+                                id_C: medium.id_C, C_val: medium.id_C_val
+                            },
+                            low: {
+                                id: low.id,
+                                kof: low.kof,
+                                type_condition: low.type_kof,
+                                id_A: low.id_A, A_val: low.id_A_val,
+                                id_B: low.id_B, B_val: low.id_B_val,
+                                id_C: low.id_C, C_val: low.id_C_val
+                            }
+                        }
+                        this.rules.push(out);
+                    }
+                    this.lingvoVars = [];
+                    this.lingvoVars = getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.id_test);
+                    this.listPage(0);
+                },
+                openOtherRules: function () {
+                    this.curRule = null;
+                    this.rules = [];
+                    this.del_rules = [];
+                    this.numPagination = -1;
+                    this.id_test = '';
+                    this.panel = 0;
+                },
+                save: function () {
+                    
+                },
+                addRule: function () {
+                    let out = {
+                        num: 1,
+                        conclusion: '',
+                        a: 0,
+                        b: 0,
+                        c: 0,
+                        d: 0,
+                        e: 0,
+                        f: 0,
+                        g: 0,
+                        h: 0,
+                        high: {
+                            id: 'new',
+                            kof: 0,
+                            type_condition: 0,
+                            id_A: 0, A_val: 0,
+                            id_B: 0, B_val: 0,
+                            id_C: 0, C_val: 0
+                        },
+                        medium: {
+                            id: 'new',
+                            kof: 0,
+                            type_condition: 0,
+                            id_A: 0, A_val: 0,
+                            id_B: 0, B_val: 0,
+                            id_C: 0, C_val: 0
+                        },
+                        low: {
+                            id: 'new',
+                            kof: 0,
+                            type_condition: 0,
+                            id_A: 0, A_val: 0,
+                            id_B: 0, B_val: 0,
+                            id_C: 0, C_val: 0
+                        }
+                    }
+                    this.rules.push(out);
+                    this.listPage(this.rules.length-1);
+                },
+                delRule: function () {
+                    this.del_rules.push(this.rules[this.numPagination].id);
+                    this.rules.splice(this.numPagination, 1);
+                    if (this.numPagination == 0) {
+                        this.rightPagination();
+                    } else {
+                        this.leftPagination();
+                    }
+                },
+                listPage: function (n) {
+                    this.curRule = this.rules[n];
+                    this.numPagination = n;
+                },
+                leftPagination: function () {
+                    if (this.numPagination > 0) this.listPage(this.numPagination - 1);
+                },
+                rightPagination: function () {
+                    if (this.numPagination < this.rules.length - 1) this.listPage(this.numPagination + 1);
+                },
+                exit: function () {
+                    this.$emit('exit', 'MainMenu');
+                }
+            },
+            template: '#KonfRules-tmp'
         }
     }
 });
@@ -251,157 +403,6 @@ Vue.component('KonfTest', {
 	},
 	template: '#KonfTest-tmp'
 })
-/*
- *************************
- *   КОНФИГУРАТОР ПРАВИЛ
- *************************
- */
-Vue.component('KonfRules',{
-    data: function(){
-        return {
-            panel: 0,//верхняя панель скрывается по этому параметру
-            id_test: '',
-            curRule: null,
-            rules: [],
-            lingvoVars: [],
-            del_rules: [],
-            power: [{id: 1, name: 'Низкий'}, {id: 2, name: 'Средний'}, {id: 3, name: 'Высокий'}],
-            numPagination: -1//текущее правило на странице
-        }
-    },
-    methods: {
-        loadRules: function(){
-            if (this.id_test == '') return;
-            let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
-            if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
-            this.panel = 1;
-
-            this.rules = [];
-            this.numPagination = -1;
-            let tmp = getDataFromDB(`SELECT * FROM conf_rules WHERE id_test = ${this.id_test} ORDER BY num_rule`);
-            for (let i = 0; i < tmp.length-1; i+=3) {
-                let high = tmp[i]; 
-                let medium = tmp[i+1];
-                let low = tmp[i+2];
-                let out = {
-                    num: high.num_rule,
-                    conclusion: high.conclusion,
-                    a: high.a,
-                    b: high.b,
-                    c: high.c,
-                    d: high.d,
-                    e: high.e,
-                    f: high.f,
-                    g: high.g,
-                    h: high.h,
-                    high: {
-                        id: high.id,
-                        kof: high.kof,
-                        type_condition: high.type_kof,
-                        id_A: high.id_A, A_val: high.id_A_val,
-                        id_B: high.id_B, B_val: high.id_B_val,
-                        id_C: high.id_C, C_val: high.id_C_val
-                    },
-                    medium: {
-                        id: medium.id,
-                        kof: medium.kof,
-                        type_condition: medium.type_kof,
-                        id_A: medium.id_A, A_val: medium.id_A_val,
-                        id_B: medium.id_B, B_val: medium.id_B_val,
-                        id_C: medium.id_C, C_val: medium.id_C_val
-                    },
-                    low: {
-                        id: low.id,
-                        kof: low.kof,
-                        type_condition: low.type_kof,
-                        id_A: low.id_A, A_val: low.id_A_val,
-                        id_B: low.id_B, B_val: low.id_B_val,
-                        id_C: low.id_C, C_val: low.id_C_val
-                    }
-                }
-                this.rules.push(out);
-            }
-
-
-            this.lingvoVars= [];
-            this.lingvoVars = getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.id_test);
-            this.listPage(0);
-        },
-        openOtherRules: function(){
-            this.curRule = null;
-            this.rules = [];
-            this.del_rules = [];            
-            this.numPagination = -1;
-            this.id_test = '';
-            this.panel = 0;
-        },
-        save: function(){
-
-        },
-        addRule: function(){
-            let out = {
-                num: 1,
-                conclusion: high.conclusion,
-                a: high.a,
-                b: high.b,
-                c: high.c,
-                d: high.d,
-                e: high.e,
-                f: high.f,
-                g: high.g,
-                h: high.h,
-                high: {
-                    id: high.id,
-                    kof: high.kof,
-                    type_condition: high.type_kof,
-                    id_A: high.id_A, A_val: high.id_A_val,
-                    id_B: high.id_B, B_val: high.id_B_val,
-                    id_C: high.id_C, C_val: high.id_C_val
-                },
-                medium: {
-                    id: medium.id,
-                    kof: medium.kof,
-                    type_condition: medium.type_kof,
-                    id_A: medium.id_A, A_val: medium.id_A_val,
-                    id_B: medium.id_B, B_val: medium.id_B_val,
-                    id_C: medium.id_C, C_val: medium.id_C_val
-                },
-                low: {
-                    id: low.id,
-                    kof: low.kof,
-                    type_condition: low.type_kof,
-                    id_A: low.id_A, A_val: low.id_A_val,
-                    id_B: low.id_B, B_val: low.id_B_val,
-                    id_C: low.id_C, C_val: low.id_C_val
-                }
-            }
-        },
-        delRule: function(){
-            this.del_rules.push(this.rules[this.numPagination].id);
-            this.rules.splice(this.numPagination,1);
-            if(this.numPagination == 0){
-                this.rightPagination();
-            }else{
-                this.leftPagination();
-            }
-        },
-        listPage: function(n){
-            this.curRule = this.rules[n];
-            this.numPagination = n;
-        },
-        leftPagination: function(){
-            if(this.numPagination > 0) this.listPage(this.numPagination-1);
-        },
-        rightPagination: function(){
-            if(this.numPagination < this.rules.length-1) this.listPage(this.numPagination+1);
-        },
-        exit: function(){
-			this.$emit('exit','MainMenu');
-        }
-    },
-    template: '#KonfRules-tmp'
-})
-
 //считать с БД
 Vue.component('authorizationRead',{
     data: function() {
