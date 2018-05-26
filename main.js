@@ -263,7 +263,9 @@ Vue.component('KonfRules',{
             id_test: '',
             curRule: null,
             rules: [],
+            lingvoVars: [],
             del_rules: [],
+            power: [{id: 1, name: 'Низкий'}, {id: 2, name: 'Средний'}, {id: 3, name: 'Высокий'}],
             numPagination: -1//текущее правило на странице
         }
     },
@@ -284,48 +286,49 @@ Vue.component('KonfRules',{
                 let out = {
                     num: high.num_rule,
                     conclusion: high.conclusion,
-                    lingvo: {
-                        a: high.a,
-                        b: high.b,
-                        c: high.c,
-                        d: high.d,
-                        e: high.e,
-                        f: high.f,
-                        g: high.g,
-                        h: high.h
+                    a: high.a,
+                    b: high.b,
+                    c: high.c,
+                    d: high.d,
+                    e: high.e,
+                    f: high.f,
+                    g: high.g,
+                    h: high.h,
+                    high: {
+                        id: high.id,
+                        kof: high.kof,
+                        type_condition: high.type_kof,
+                        id_A: high.id_A, A_val: high.id_A_val,
+                        id_B: high.id_B, B_val: high.id_B_val,
+                        id_C: high.id_C, C_val: high.id_C_val
                     },
-                    power: {
-                        high: {
-                            id: high.id,
-                            kof: high.kof,
-                            type_condition: high.type_kof,
-                            id_A: high.id_A, A_val: high.id_A_val,
-                            id_B: high.id_B, B_val: high.id_B_val,
-                            id_C: high.id_C, C_val: high.id_C_val
-                        },
-                        medium: {
-                            id: medium.id,
-                            kof: medium.kof,
-                            type_condition: medium.type_kof,
-                            id_A: medium.id_A, A_val: medium.id_A_val,
-                            id_B: medium.id_B, B_val: medium.id_B_val,
-                            id_C: medium.id_C, C_val: medium.id_C_val
-                        },
-                        low: {
-                            id: low.id,
-                            kof: low.kof,
-                            type_condition: low.type_kof,
-                            id_A: low.id_A, A_val: low.id_A_val,
-                            id_B: low.id_B, B_val: low.id_B_val,
-                            id_C: low.id_C, C_val: low.id_C_val
-                        }
+                    medium: {
+                        id: medium.id,
+                        kof: medium.kof,
+                        type_condition: medium.type_kof,
+                        id_A: medium.id_A, A_val: medium.id_A_val,
+                        id_B: medium.id_B, B_val: medium.id_B_val,
+                        id_C: medium.id_C, C_val: medium.id_C_val
+                    },
+                    low: {
+                        id: low.id,
+                        kof: low.kof,
+                        type_condition: low.type_kof,
+                        id_A: low.id_A, A_val: low.id_A_val,
+                        id_B: low.id_B, B_val: low.id_B_val,
+                        id_C: low.id_C, C_val: low.id_C_val
                     }
                 }
                 this.rules.push(out);
             }
-            this.paginate(0);
+
+
+            this.lingvoVars= [];
+            this.lingvoVars = getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.id_test);
+            this.listPage(0);
         },
         openOtherRules: function(){
+            this.curRule = null;
             this.rules = [];
             this.del_rules = [];            
             this.numPagination = -1;
@@ -341,15 +344,20 @@ Vue.component('KonfRules',{
         delRule: function(){
             
         },
-        paginate: function(n){
+        listPage: function(n){
+            this.curRule = this.rules[n];
             this.numPagination = n;
-            this.curRule = this.rules[this.numPagination];
+        },
+        paginate: function(n){
+            if(this.numPagination > 0 && this.numPagination < this.rules.length){
+                this.listPage(this.numPagination+n);
+            }
         },
         leftPagination: function(){
-            if(this.numPagination > 0) this.paginate(this.numPagination-1);
+            this.paginate(-1);
         },
         rightPagination: function(){
-            if(this.numPagination < this.rules.length) this.paginate(this.numPagination+1);
+            this.paginate(+1);
         },
         exit: function(){
 			this.$emit('exit','MainMenu');
