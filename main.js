@@ -166,14 +166,8 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                         let out = {
                             num: high.num_rule,
                             conclusion: high.conclusion,
-                            a: high.a,
-                            b: high.b,
-                            c: high.c,
-                            d: high.d,
-                            e: high.e,
-                            f: high.f,
-                            g: high.g,
-                            h: high.h,
+                            a: high.a, b: high.b, c: high.c, d: high.d,
+                            e: high.e, f: high.f, g: high.g, h: high.h,
                             power: [
                                 {
                                     type_kof: low.type_kof,
@@ -219,12 +213,22 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 save: function () {
                     this.rules.forEach(el => {
                         if(el.indicatorNew == 'new'){
-                            /*
-                            if (el.id_type == -1) { alert('Не был выбран тип вопроса'); return; }
-                            let sql = `INSERT INTO questions (\`id_type\`, \`id_test\`, \`question\`) VALUES ( ${el.id_type}, ${el.id_test}, '${el.question}' )`;
-                            let id = insertDataInDB(sql);
-                            if (id == -1) { alert('Ошибка вставки'); return; }
-                            el.id = id;*/
+                            let tmp_sql = `INSERT INTO conf_rules (id_test, conclusion, num_rule, a,b,c, d, e, f, g, h, type_kof,kof, id_type, id_A, id_B, id_C, id_A_val, id_B_val, id_C_val) VALUES \
+                            (${this.id_test}, '${el.conclusion}', ${el.num}, \
+                                ${el.a}, ${el.b}, ${el.c}, ${el.d},\
+                                ${el.e}, ${el.f}, ${el.g}, ${el.h}`;
+                            let sql_power = function(pow){
+                                return `, ${pow.type_kof}, ${pow.kof}, ${pow.type_condition}, \ 
+                                 ${pow.id_A},${pow.id_B},${pow.id_C}, \
+                                 ${pow.A_val},${pow.B_val},${pow.C_val})`; 
+                            }
+                            el.power.forEach(el1 => {
+                                let tmp_id = insertDataInDB(tmp_sql + sql_power(el1));
+                                el.power.id = tmp_id;
+                                if (tmp_id == -1) { 
+                                    alert('Ошибка вставки'); return; }
+                            });
+                            el.indicatorNew = 'inserted';
                         } else {
                             let tmp_sql = `UPDATE conf_rules SET conclusion= '${el.conclusion}', num_rule = ${el.num}, \
                                 a = ${el.a}, b = ${el.b}, c = ${el.c}, d = ${el.d},\
@@ -256,37 +260,39 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 addRule: function () {
                     let out = {
                         indicatorNew: 'new',
-                        num: 1,
+                        num: Number(this.rules[this.rules.length-1].num)+1,
                         conclusion: '',
-                        a: 0,
-                        b: 0,
-                        c: 0,
-                        d: 0,
-                        e: 0,
-                        f: 0,
-                        g: 0,
-                        h: 0,
-                        high: {
-                            kof: 0,
-                            type_condition: 0,
-                            id_A: 0, A_val: 0,
-                            id_B: 0, B_val: 0,
-                            id_C: 0, C_val: 0
-                        },
-                        medium: {
-                            kof: 0,
-                            type_condition: 0,
-                            id_A: 0, A_val: 0,
-                            id_B: 0, B_val: 0,
-                            id_C: 0, C_val: 0
-                        },
-                        low: {
-                            kof: 0,
-                            type_condition: 0,
-                            id_A: 0, A_val: 0,
-                            id_B: 0, B_val: 0,
-                            id_C: 0, C_val: 0
-                        }
+                        a: 0, b: 0, c: 0, d: 0,
+                        e: 0, f: 0, g: 0, h: 0,
+                        power: [
+                            {
+                                type_kof: 1,
+                                id: 'none',
+                                kof: 0,
+                                type_condition: 0,
+                                id_A: 0, A_val: 0,
+                                id_B: 0, B_val: 0,
+                                id_C: 0, C_val: 0
+                            },
+                            {
+                                type_kof: 2,
+                                id: 'none',
+                                kof: 0,
+                                type_condition: 0,
+                                id_A: 0, A_val: 0,
+                                id_B: 0, B_val: 0,
+                                id_C: 0, C_val: 0
+                            },
+                            {
+                                type_kof: 3,
+                                id: 'none',
+                                kof: 0,
+                                type_condition: 0,
+                                id_A: 0, A_val: 0,
+                                id_B: 0, B_val: 0,
+                                id_C: 0, C_val: 0
+                            }
+                        ]
                     }
                     this.rules.push(out);
                     this.listPage(this.rules.length-1);
