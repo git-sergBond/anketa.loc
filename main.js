@@ -348,16 +348,11 @@ Vue.component('KonfRules',{
             this.curRule = this.rules[n];
             this.numPagination = n;
         },
-        paginate: function(n){
-            if(this.numPagination > 0 && this.numPagination < this.rules.length){
-                this.listPage(this.numPagination+n);
-            }
-        },
         leftPagination: function(){
-            this.paginate(-1);
+            if(this.numPagination > 0) this.listPage(this.numPagination-1);
         },
         rightPagination: function(){
-            this.paginate(+1);
+            if(this.numPagination < this.rules.length-1) this.listPage(this.numPagination+1);
         },
         exit: function(){
 			this.$emit('exit','MainMenu');
