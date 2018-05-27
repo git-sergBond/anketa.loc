@@ -170,13 +170,13 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             e: high.e, f: high.f, g: high.g, h: high.h,
                             power: [
                                 {
-                                    type_kof: low.type_kof,
-                                    id: low.id,
-                                    kof: low.kof,
-                                    type_condition: low.type_kof,
-                                    id_A: low.id_A, A_val: low.id_A_val,
-                                    id_B: low.id_B, B_val: low.id_B_val,
-                                    id_C: low.id_C, C_val: low.id_C_val
+                                    type_kof: high.type_kof,
+                                    id: high.id,
+                                    kof: high.kof,
+                                    type_condition: high.type_kof,
+                                    id_A: high.id_A, A_val: high.id_A_val,
+                                    id_B: high.id_B, B_val: high.id_B_val,
+                                    id_C: high.id_C, C_val: high.id_C_val
                                 },
                                 {
                                     type_kof: medium.type_kof,
@@ -188,13 +188,13 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                                     id_C: medium.id_C, C_val: medium.id_C_val
                                 },
                                 {
-                                    type_kof: high.type_kof,
-                                    id: high.id,
-                                    kof: high.kof,
-                                    type_condition: high.type_kof,
-                                    id_A: high.id_A, A_val: high.id_A_val,
-                                    id_B: high.id_B, B_val: high.id_B_val,
-                                    id_C: high.id_C, C_val: high.id_C_val
+                                    type_kof: low.type_kof,
+                                    id: low.id,
+                                    kof: low.kof,
+                                    type_condition: low.type_kof,
+                                    id_A: low.id_A, A_val: low.id_A_val,
+                                    id_B: low.id_B, B_val: low.id_B_val,
+                                    id_C: low.id_C, C_val: low.id_C_val
                                 }
                             ]
                         }
