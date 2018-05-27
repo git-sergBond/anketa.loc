@@ -1,42 +1,43 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10deb1
--- http://www.phpmyadmin.net
+-- version 4.7.7
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: May 19, 2018 at 11:03 PM
--- Server version: 5.5.59-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.23
+-- Хост: 127.0.0.1:3306
+-- Время создания: Май 27 2018 г., 22:21
+-- Версия сервера: 5.6.38
+-- Версия PHP: 5.5.38
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `anketa`
+-- База данных: `anketa`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `authorization`
+-- Структура таблицы `authorization`
 --
 
-CREATE TABLE IF NOT EXISTS `authorization` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `authorization` (
+  `id` bigint(20) NOT NULL,
   `login` longtext NOT NULL,
   `password` longtext,
   `id_type_person` bigint(20) DEFAULT NULL,
-  `group` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+  `group` longtext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `authorization`
+-- Дамп данных таблицы `authorization`
 --
 
 INSERT INTO `authorization` (`id`, `login`, `password`, `id_type_person`, `group`) VALUES
@@ -53,16 +54,22 @@ INSERT INTO `authorization` (`id`, `login`, `password`, `id_type_person`, `group
 (12, '12', '12', 12, '12'),
 (13, '15', '15', 15, '15'),
 (14, '16', '16', 16, '16'),
-(15, '17', '17', 17, '17');
+(15, '17', '17', 17, '17'),
+(16, '4', '4', 1, '2'),
+(17, '35', '5', 2, '5'),
+(18, '356', '3', 1, 't'),
+(19, 'q', 'q', 1, 'q'),
+(20, 'w', 'w', 2, 'w'),
+(21, 'e', 'e', 3, 'e');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `conf_rules`
+-- Структура таблицы `conf_rules`
 --
 
-CREATE TABLE IF NOT EXISTS `conf_rules` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `conf_rules` (
+  `id` bigint(20) NOT NULL,
   `id_test` bigint(20) DEFAULT NULL,
   `id_type` bigint(20) DEFAULT NULL,
   `id_A` bigint(20) DEFAULT NULL,
@@ -82,67 +89,65 @@ CREATE TABLE IF NOT EXISTS `conf_rules` (
   `e` double DEFAULT NULL,
   `f` double DEFAULT NULL,
   `g` double DEFAULT NULL,
-  `h` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `h` double DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `conf_rules`
+-- Дамп данных таблицы `conf_rules`
 --
 
 INSERT INTO `conf_rules` (`id`, `id_test`, `id_type`, `id_A`, `id_B`, `id_C`, `id_A_val`, `id_B_val`, `id_C_val`, `conclusion`, `kof`, `type_kof`, `num_rule`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`) VALUES
-(1, 1, 2, 1, 5, 4, 2, 3, 2, 'Трудоустройство по специальности, полученной в вузе', 1, 1, 1, 20, 20, 30, 40, 50, 60, 70, 80),
-(2, 1, 2, 1, 3, 4, 2, 2, 3, 'Трудоустройство по специальности, полученной в вузе', 0.4, 2, 1, 20, 20, 30, 40, 50, 60, 70, 80),
-(3, 1, 2, 1, 2, 3, 3, 3, 2, 'Трудоустройство по специальности, полученной в вузе', 0.8, 3, 1, 20, 20, 30, 40, 50, 60, 70, 80),
-(4, 1, 1, 1, 2, 3, 2, 3, 2, 'Трудоустройство по др. специальности', 1, 1, 2, 10, 20, 30, 40, 50, 60, 70, 80),
-(5, 1, 5, 1, 3, 2, 2, 2, 2, 'Трудоустройство по др. специальности', 1, 2, 2, 10, 20, 30, 40, 50, 60, 70, 80),
-(6, 1, 5, 1, 3, 1, 2, 3, 3, 'Трудоустройство по др. специальности', 1, 3, 2, 10, 20, 30, 40, 50, 60, 70, 80),
-(7, 1, 1, 1, 2, 2, 2, 3, 3, 'Продолжение обучения в магистратуре вуза по тому же направлению', 1, 1, 3, 10, 20, 30, 40, 50, 60, 70, 80),
-(8, 1, 1, 1, 1, 3, 2, 2, 2, 'Продолжение обучения в магистратуре вуза по тому же направлению', 1, 2, 3, 10, 20, 30, 40, 50, 60, 70, 80),
-(9, 1, 1, 1, 2, 2, 3, 3, 3, 'Продолжение обучения в магистратуре вуза по тому же направлению', 1, 3, 3, 10, 20, 30, 40, 50, 60, 70, 80);
+(4, 1, 1, 1, 2, 3, 2, 3, 2, 'Трудоустройство по др. специальности', 1, 1, 1, 10, 20, 30, 40, 50, 60, 70, 80),
+(5, 1, 2, 1, 3, 2, 2, 2, 2, 'Трудоустройство по др. специальности', 1, 2, 1, 10, 20, 30, 40, 50, 60, 70, 80),
+(6, 1, 3, 1, 3, 1, 2, 3, 3, 'Трудоустройство по др. специальности', 1, 3, 1, 10, 20, 30, 40, 50, 60, 70, 80),
+(7, 1, 1, 1, 2, 2, 2, 3, 3, 'Продолжение обучения в магистратуре вуза по тому же направлению', 1, 1, 2, 10, 20, 30, 40, 50, 60, 70, 80),
+(8, 1, 2, 1, 1, 3, 2, 2, 2, 'Продолжение обучения в магистратуре вуза по тому же направлению', 1, 2, 2, 10, 20, 30, 40, 50, 60, 70, 80),
+(9, 1, 3, 1, 2, 2, 2, 3, 3, 'Продолжение обучения в магистратуре вуза по тому же направлению', 1, 3, 2, 10, 20, 30, 40, 50, 60, 70, 80),
+(31, 1, 1, 4, 4, 4, 1, 1, 1, '', 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0),
+(32, 1, 4, 5, 5, 5, 2, 2, 2, '', 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0),
+(33, 1, 6, 6, 6, 6, 3, 3, 3, '', 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `questions`
+-- Структура таблицы `questions`
 --
 
-CREATE TABLE IF NOT EXISTS `questions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `questions` (
+  `id` bigint(20) NOT NULL,
   `id_test` bigint(20) DEFAULT NULL,
   `id_type` bigint(20) DEFAULT NULL,
   `question` longtext,
-  `number` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+  `number` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `questions`
+-- Дамп данных таблицы `questions`
 --
 
 INSERT INTO `questions` (`id`, `id_test`, `id_type`, `question`, `number`) VALUES
-(1, NULL, NULL, '', NULL),
-(2, 1, 1, 'Положительное отношение к специальности (направлению)?', 2),
-(3, 1, 1, 'Положительное отношение к вузу?', 3),
-(4, 1, 2, 'Уровень теоретических знаний ', 4),
-(5, 1, 2, 'Уровень практических навыков (определяется ср. баллом оценок)', 5);
+(1, 1, 1, 'Положительное отношение к специальности (направлению)?', 2),
+(2, 1, 1, 'Положительное отношение к учебе', 4),
+(3, 1, 1, 'положит отнош к вузу', NULL),
+(4, 1, 2, 'уровень практич навыков', NULL),
+(5, 1, 2, 'уровень теоретических навыков', NULL),
+(10, NULL, NULL, '', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `res_testing`
+-- Структура таблицы `res_testing`
 --
 
-CREATE TABLE IF NOT EXISTS `res_testing` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `res_testing` (
+  `id` bigint(20) NOT NULL,
   `id_pers` bigint(20) DEFAULT NULL,
   `id_question` bigint(20) DEFAULT NULL,
-  `answer` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
+  `answer` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `res_testing`
+-- Дамп данных таблицы `res_testing`
 --
 
 INSERT INTO `res_testing` (`id`, `id_pers`, `id_question`, `answer`) VALUES
@@ -204,16 +209,20 @@ INSERT INTO `res_testing` (`id`, `id_pers`, `id_question`, `answer`) VALUES
 (56, 15, 2, 1),
 (57, 15, 3, 0),
 (58, 15, 4, 3),
-(59, 15, 5, 3);
+(59, 15, 5, 3),
+(60, 8, 2, 0),
+(61, 8, 3, 1),
+(62, 8, 4, 2),
+(63, 8, 5, 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rules`
+-- Структура таблицы `rules`
 --
 
-CREATE TABLE IF NOT EXISTS `rules` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `rules` (
+  `id` bigint(20) NOT NULL,
   `name` longtext,
   `a` varchar(255) DEFAULT NULL,
   `b` varchar(255) DEFAULT NULL,
@@ -234,39 +243,36 @@ CREATE TABLE IF NOT EXISTS `rules` (
   `f7` varchar(255) DEFAULT '1',
   `f8` varchar(255) DEFAULT '1',
   `f9` varchar(255) DEFAULT NULL,
-  `f10` double DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+  `f10` double DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `rules`
+-- Дамп данных таблицы `rules`
 --
 
 INSERT INTO `rules` (`id`, `name`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`, `id_questions`, `id_tests`, `f1`, `f2`, `f3`, `f4`, `f5`, `f6`, `f7`, `f8`, `f9`, `f10`) VALUES
-(1, 'Вопрос 1', '7', '22', '33', '44', '55', '66', '77', '99', 1, 1, '0', '2', '3', '4', '5', '6', '7', '0,5', '9', 10),
+(1, 'Вопрос 1', '6', '22', '33', '44', '55', '66', '77', '99', 1, 1, '0', '2', '3', '4', '5', '6', '7', '0,5', '9', 10),
 (2, 'Вопрос 2', '3', '22', '33', '44', '55', '66', '77', '99', 2, 1, '2', '7', '11', '15', '20', '25', '30', '35', '9', NULL),
 (3, 'Вопрос 3', '2', '22', '33', '44', '55', '66', '77', '99', 3, 1, '3', '8', '12', '16', '21', '26', '31', '36', '', NULL),
 (4, 'Вопрос 4', '2', '2', '3', '3', '4', '4', '5', '5', 4, 1, '4', '9', '13', '17', '22', '27', '32', '37', '', NULL),
-(5, 'Вопрос 5', '2', '2', '3', '3', '4', '4', '5', '5', 5, 1, '5', '10', '14', '18', '23', '28', '33', '38', '', NULL),
-(6, 'Вопрос 6', '1', '22', '33', '44', '55', '66', '77', '88', 6, 1, '6', '1', '1', '19', '24', '29', '34', '39', '1', 1);
+(5, 'Вопрос 5', '2', '2', '3', '3', '4', '4', '5', '5', 5, 1, '5', '10', '14', '18', '23', '28', '33', '38', '', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tests`
+-- Структура таблицы `tests`
 --
 
-CREATE TABLE IF NOT EXISTS `tests` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tests` (
+  `id` bigint(20) NOT NULL,
   `name` longtext,
   `id_redactor` bigint(20) DEFAULT NULL,
   `data_create` bigint(20) DEFAULT NULL,
-  `data_edit` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `data_edit` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `tests`
+-- Дамп данных таблицы `tests`
 --
 
 INSERT INTO `tests` (`id`, `name`, `id_redactor`, `data_create`, `data_edit`) VALUES
@@ -275,42 +281,39 @@ INSERT INTO `tests` (`id`, `name`, `id_redactor`, `data_create`, `data_edit`) VA
 -- --------------------------------------------------------
 
 --
--- Table structure for table `type_person`
+-- Структура таблицы `type_person`
 --
 
-CREATE TABLE IF NOT EXISTS `type_person` (
+CREATE TABLE `type_person` (
   `id` bigint(20) NOT NULL,
   `name` longtext NOT NULL,
-  `access_pin_cod` longtext NOT NULL,
-  PRIMARY KEY (`id`)
+  `access_pin_cod` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `type_question`
+-- Структура таблицы `type_question`
 --
 
-CREATE TABLE IF NOT EXISTS `type_question` (
+CREATE TABLE `type_question` (
   `id` bigint(20) NOT NULL,
-  `name` longtext,
-  PRIMARY KEY (`id`)
+  `name` longtext
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `type_rules`
+-- Структура таблицы `type_rules`
 --
 
-CREATE TABLE IF NOT EXISTS `type_rules` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+CREATE TABLE `type_rules` (
+  `id` bigint(20) NOT NULL,
+  `name` longtext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `type_rules`
+-- Дамп данных таблицы `type_rules`
 --
 
 INSERT INTO `type_rules` (`id`, `name`) VALUES
@@ -324,23 +327,139 @@ INSERT INTO `type_rules` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `type_val_ABC`
+-- Структура таблицы `type_val_ABC`
 --
 
-CREATE TABLE IF NOT EXISTS `type_val_ABC` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+CREATE TABLE `type_val_ABC` (
+  `id` bigint(20) NOT NULL,
+  `name` longtext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `type_val_ABC`
+-- Дамп данных таблицы `type_val_ABC`
 --
 
 INSERT INTO `type_val_ABC` (`id`, `name`) VALUES
 (1, 'низкий'),
 (2, 'средний'),
 (3, 'высокий');
+
+--
+-- Индексы сохранённых таблиц
+--
+
+--
+-- Индексы таблицы `authorization`
+--
+ALTER TABLE `authorization`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `conf_rules`
+--
+ALTER TABLE `conf_rules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `questions`
+--
+ALTER TABLE `questions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `res_testing`
+--
+ALTER TABLE `res_testing`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `rules`
+--
+ALTER TABLE `rules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `tests`
+--
+ALTER TABLE `tests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `type_person`
+--
+ALTER TABLE `type_person`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `type_question`
+--
+ALTER TABLE `type_question`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `type_rules`
+--
+ALTER TABLE `type_rules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `type_val_ABC`
+--
+ALTER TABLE `type_val_ABC`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT для сохранённых таблиц
+--
+
+--
+-- AUTO_INCREMENT для таблицы `authorization`
+--
+ALTER TABLE `authorization`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT для таблицы `conf_rules`
+--
+ALTER TABLE `conf_rules`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT для таблицы `questions`
+--
+ALTER TABLE `questions`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT для таблицы `res_testing`
+--
+ALTER TABLE `res_testing`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+
+--
+-- AUTO_INCREMENT для таблицы `rules`
+--
+ALTER TABLE `rules`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT для таблицы `tests`
+--
+ALTER TABLE `tests`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT для таблицы `type_rules`
+--
+ALTER TABLE `type_rules`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT для таблицы `type_val_ABC`
+--
+ALTER TABLE `type_val_ABC`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
