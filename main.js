@@ -92,7 +92,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
 
         txt: 0,//вроде нигде больше не юзал, кроме проверки JSON
 
-        curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
+        curentView: 'MainMenu'//'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
     },
     methods: {
         SwitchView: function (view) {//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
@@ -133,12 +133,12 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
         }
     },
     components: {
+        /*
+         *************************
+         *   КОНФИГУРАТОР ПРАВИЛ
+         ************************
+         */
         'KonfRules': {
-            /*
-             *************************
-             *   КОНФИГУРАТОР ПРАВИЛ
-             ************************
-             */
             data: function () {
                 return {
                     panel: 0,//верхняя панель скрывается по этому параметру
@@ -343,12 +343,12 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
             },
             template: '#KonfRules-tmp'
         },
-        'Expert': {
         /*
          ********************
          *   ЭКСПЕРТ
          ********************
          */
+        'Expert': {
             name: 'Expert',
             template: '#expert-tmp',
             data: function () {
@@ -388,6 +388,105 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     this.$emit('exit', 'MainMenu');
                 }
             }
+        },
+        /*
+         ********************
+         *   СОЦИОЛОГ
+         ********************
+         */
+        'Sociolog': {
+            template: '#sociolog-tmp',
+            data: function () {
+                return {
+                    panel: 0, //верхняя панель скрывается по этому параметру
+                    id_test: "",
+                    fazification: []
+                }
+            },
+            methods:
+                {
+                    loadVars: function () {
+                        if (this.id_test == "") return;
+                        let isValidTest = getDataFromDB(
+                            `SELECT count(*) FROM tests WHERE id=${this.id_test}`
+                        );
+                        if (isValidTest["0"]["count(*)"] == 0) {
+                            alert("Такого теста не существует, выберите другой тест");
+                            return;
+                        }
+                        
+
+                        let tmpMas = getDataFromDB("SELECT * FROM rules, questions WHERE questions.id = rules.id_questions  AND questions.id_test = " + this.id_test);
+                        tmpMas.forEach(row => {
+                            let percent = -1;
+                            let avg = -1;
+
+                            let question_id = row["id_questions"];
+                            let sql_get_count_answed_on_question = function(id_question){
+                                return `select count(*) from res_testing where id_question = ${id_question}`;
+                            }
+                            let all_cnt = getDataFromDB(sql_get_count_answed_on_question(question_id))["0"]["count(*)"];
+                        
+                            let type_quest = row["id_type"];
+                        
+                            
+
+                            let sql_get_count_answed_yes = function(id_question){
+                                return `select count(*) from res_testing where id_question = ${id_question} AND  answer = 1`;
+                            }
+                            let sql_get_avg_answed_2_to_5 = function(id_question){
+                                return `select  AVG(answer) from res_testing where id_question = ${id_question}`;
+                            }
+            
+                            if (Number(type_quest) == 1) //если это + - то считаем %
+                            {
+                                let cnt_yes = getDataFromDB(sql_get_count_answed_yes(question_id))["0"]["count(*)"];;
+                                percent = (Number(cnt_yes) * 100.0) / Number(all_cnt);
+                                row.percent_or_avg = (Math.round(percent * 100) / 100);
+                                row.procent = true;
+                            }
+                            else //если это 2..5 то считаем среднее
+                            {
+                                avg = getDataFromDB(sql_get_avg_answed_2_to_5(question_id))["0"]["AVG(answer)"];
+                                row.percent_or_avg = (Math.round(avg * 100) / 100);
+                                row.procent = false;
+                            }
+                        
+                            let suhu = row.percent_or_avg;
+                            let s_rendah = -1;
+                            let s_sedang = -1;
+                            let s_tinggi = -1;
+                            //низкий
+                            if (suhu < row.a) s_rendah = 1;
+                            if (suhu >= row.a && suhu <= row.d) s_rendah = (row.d - suhu) / (row.d - row.a);
+                            if (suhu > row.a) s_rendah = 0;
+                            row.itog_niz = Math.round(s_rendah * 1000) / 1000;
+                            // средний
+                            if (suhu < row.b) s_sedang = 0;
+                            if (suhu >= row.b && suhu <= row.d) s_sedang = (suhu - row.b) / (row.d - row.b);
+                            if (suhu >= row.d && suhu <= row.f) s_sedang = 1;
+                            if (suhu >= row.f && suhu <= row.h) s_sedang = (row.h - suhu) / (row.h - row.f);
+                            if (suhu > row.h) s_sedang = 0;
+                            row.itog_sred = Math.round(s_sedang * 1000) / 1000;
+                            //высокий 
+                            if (suhu < row.e) s_tinggi = 0;
+                            if (suhu >= row.e && suhu <= row.h) s_tinggi = (suhu - row.e) / (row.h - row.e);
+                            if (suhu > row.h) s_tinggi = 1;
+                            row.itog_vys = Math.round(s_tinggi * 1000) / 1000;
+
+                        });
+                        this.fazification = tmpMas;
+                        this.panel = 1;
+                    },
+                    openOther: function(){
+                        this.fazification = [];
+                        this.panel = 0;
+                        id_test = '';
+                    },
+                    exit: function () {
+                        this.$emit("exit", "MainMenu");
+                    }
+                }
         }
     }
 });
