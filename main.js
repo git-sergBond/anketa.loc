@@ -212,38 +212,40 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 },
                 save: function () {
                     this.rules.forEach(el => {
-                        if(el.indicatorNew == 'new'){
+                        if (el.indicatorNew == 'new') {
                             let tmp_sql = `INSERT INTO conf_rules (id_test, conclusion, num_rule, a,b,c, d, e, f, g, h, type_kof,kof, id_type, id_A, id_B, id_C, id_A_val, id_B_val, id_C_val) VALUES \
                             (${this.id_test}, '${el.conclusion}', ${el.num}, \
                                 ${el.a}, ${el.b}, ${el.c}, ${el.d},\
                                 ${el.e}, ${el.f}, ${el.g}, ${el.h}`;
-                            let sql_power = function(pow){
+                            let sql_power = function (pow) {
                                 return `, ${pow.type_kof}, ${pow.kof}, ${pow.type_condition}, \ 
                                  ${pow.id_A},${pow.id_B},${pow.id_C}, \
-                                 ${pow.A_val},${pow.B_val},${pow.C_val})`; 
+                                 ${pow.A_val},${pow.B_val},${pow.C_val})`;
                             }
                             el.power.forEach(el1 => {
                                 let tmp_id = insertDataInDB(tmp_sql + sql_power(el1));
                                 el1.id = tmp_id;
-                                if (tmp_id == -1) { 
-                                    alert('Ошибка вставки'); return; }
+                                if (tmp_id == -1) {
+                                    alert('Ошибка вставки'); return;
+                                }
                             });
                             el.indicatorNew = 'inserted';
                         } else {
                             let tmp_sql = `UPDATE conf_rules SET conclusion= '${el.conclusion}', num_rule = ${el.num}, \
                                 a = ${el.a}, b = ${el.b}, c = ${el.c}, d = ${el.d},\
                                 e = ${el.e}, f = ${el.f}, g = ${el.g}, h = ${el.h}`;
-                            let sql_power = function(pow){
+                            let sql_power = function (pow) {
                                 return `, type_kof = ${pow.type_kof}, kof = ${pow.kof}, \
                                 id_type = ${pow.type_condition}, \ 
                                 id_A = ${pow.id_A}, id_A_val = ${pow.A_val},\
                                 id_B = ${pow.id_B}, id_B_val = ${pow.B_val},\
                                 id_C = ${pow.id_C}, id_C_val = ${pow.C_val} \
-                                WHERE id = ${pow.id}`; 
+                                WHERE id = ${pow.id}`;
                             }
                             el.power.forEach(el1 => {
-                                if (insertDataInDB(tmp_sql + sql_power(el1)) == -1) { 
-                                    alert('Ошибка обновления'); return; }
+                                if (insertDataInDB(tmp_sql + sql_power(el1)) == -1) {
+                                    alert('Ошибка обновления'); return;
+                                }
                             });
                         }
                     });
@@ -260,7 +262,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 addRule: function () {
                     let out = {
                         indicatorNew: 'new',
-                        num: Number(this.rules[this.rules.length-1].num)+1,
+                        num: Number(this.rules[this.rules.length - 1].num) + 1,
                         conclusion: '',
                         a: 0, b: 0, c: 0, d: 0,
                         e: 0, f: 0, g: 0, h: 0,
@@ -295,7 +297,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                         ]
                     }
                     this.rules.push(out);
-                    this.listPage(this.rules.length-1);
+                    this.listPage(this.rules.length - 1);
                 },
                 delRule: function () {
                     this.rules[this.numPagination].power.forEach(el => {
@@ -325,21 +327,50 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     this.$emit('exit', 'MainMenu');
                 }
             },
-            components:{
-                'forpowertabs':{
+            components: {
+                'forpowertabs': {
                     name: 'forpowertabs',
-                    props: ['powerprop','idtestprop'],
-                    data: function(){
+                    props: ['powerprop', 'idtestprop'],
+                    data: function () {
                         return {
                             lingvoVars: getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.idtestprop),
                             power: [{ id: 1, name: 'Низкий' }, { id: 2, name: 'Средний' }, { id: 3, name: 'Высокий' }],
-                            condition: [{id: 1, name: 'A & B & C'},{id: 2, name: 'A & (B || C)'},{id: 3, name: '(A & B) || C'},{id: 4, name: 'A || B || C'},{id: 5, name: 'A & B'},{id: 6, name: 'A || B'}]
+                            condition: [{ id: 1, name: 'A & B & C' }, { id: 2, name: 'A & (B || C)' }, { id: 3, name: '(A & B) || C' }, { id: 4, name: 'A || B || C' }, { id: 5, name: 'A & B' }, { id: 6, name: 'A || B' }]
                         }
                     },
                     template: '#forpowertabs-tmp'
                 }
             },
             template: '#KonfRules-tmp'
+        },
+        'Expert': {
+        /*
+         ********************
+         *   ЭКСПЕРТ
+         ********************
+         */
+            name: 'Expert',
+            template: '#expert-tmp',
+            data: function () {
+                return {
+                    id_test: '',
+                    panel: 0
+                }
+            },
+            methods: {
+                loadVars: function(){
+                    
+                }, 
+                save: function(){
+
+                },
+                openOther: function(){
+                    
+                },
+                exit: function () {
+                    this.$emit('exit', 'MainMenu');
+                }
+            }
         }
     }
 });
