@@ -354,18 +354,35 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
             data: function () {
                 return {
                     id_test: '',
-                    panel: 0
+                    panel: 0,
+                    rules: []
                 }
             },
             methods: {
                 loadVars: function(){
-                    
+                    if (this.id_test == '') return;
+                    let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
+                    if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
+                    this.panel = 1;
+                    this.rules = [];
+                    this.rules = getDataFromDB(`SELECT * FROM rules WHERE id_tests = ${this.id_test}`);
                 }, 
                 save: function(){
-
+                    let sql_update = function(id,name,a,b,c,d,e,f,g,h){
+                        return `update rules set name='${name}', a ='${a}', b ='${b}',  c ='${c}', d ='${d}', e ='${e}', f ='${f}',   g ='${g}', h ='${h}' WHERE id='${id}'`;
+                    }
+                    let id;
+                    this.rules.forEach(el => {
+                        let sql = sql_update(el.id,el.name,el.a,el.b,el.c,el.d,el.e,el.f,el.g,el.h);
+                        console.log(sql);
+                        id = insertDataInDB(sql);
+                        if(id == -1) {alert('Ошибка обновления'); return;}
+                    });
                 },
                 openOther: function(){
-                    
+                    this.rules = [];
+                    this.panel = 0;
+                    id_test = '';
                 },
                 exit: function () {
                     this.$emit('exit', 'MainMenu');
