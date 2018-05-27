@@ -224,7 +224,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             }
                             el.power.forEach(el1 => {
                                 let tmp_id = insertDataInDB(tmp_sql + sql_power(el1));
-                                el.power.id = tmp_id;
+                                el1.id = tmp_id;
                                 if (tmp_id == -1) { 
                                     alert('Ошибка вставки'); return; }
                             });
