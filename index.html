@@ -155,7 +155,7 @@
                     <div v-show='typePers == 3'  class="col-lg-4 col-sm-12 text-center block-menu-item">
                         <img class="img-circle" alt="140x140" style="width: 140px; height: 140px;" src="img/stats.png" data-holder-rendered="true">
                         <h3>Дефазификация</h3>
-                        <a  @click="curentView='authorizationRead'"  class="btn btn-primary" style="color: #eee">Дефазификация</a>
+                        <a  @click="curentView='Defazification'"  class="btn btn-primary" style="color: #eee">Дефазификация</a>
                     </div>
                 </div>
             </div>
@@ -578,32 +578,78 @@
         </table>
     </div>
 </template>
-
-
-<!--VVVVVVVVVVVVVV-->
-<!-- считать с БД -->
-<!--VVVVVVVVVVVVVV-->
-    <template id='authorizationRead-tmp'>
-        <div>
-            <button @click='load'>load</button>
-            <button @click='exit'>exit</button>
-            <p v-for="e in respons_db">
-                <span v-for="(value, key) in e">
-                    {{ key }}={{ value}}
-                </span>
-            </p>
-        </div>
-    </template>
-
-    <script type="text/javascript" src="main.js"></script>
-    <!--Подключение скриптов бутстрап -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-        crossorigin="anonymous"></script>
-    <script src="js/script.js"></script>
+<!--VVVVVVVVVVVVVVVVVVV-->
+<!--   Дефазификация   -->
+<!--VVVVVVVVVVVVVVVVVVV-->
+<template id='defazification-tmp'>
+    <div>
+        <!--Начало блока шапка страницы-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <!--Кнопки на navbar -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" style="margin-right: 1em">
+                        <label v-show='panel == 0' style="color: #eee"> Введите ID анкеты:</label>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <input v-show='panel == 0' v-model='id_test' class="form-control" type="number" style="float: left;">
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 0' @click='loadVars' type="button" class="btn btn-danger" style="float: right;">Загрузить</button>
+                    </li>
+                    <li class="nav-item" style="margin-right: 1em">
+                        <button v-show='panel == 1' @click='openOther' type="button" class="btn btn-danger">Загрузить другую анкету</button>
+                    </li>
+                </ul>
+            </div>
+            <button @click='exit' type="button" class="btn btn-danger">Главное меню</button>
+        </nav>
+        <table v-show='panel == 1' class="table">
+            <thead class="thead-default">
+                <tr>
+                    <th style="text-align: right;">№</th>
+                    <th style="width: 100%">Правило</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for='(item_def, index) in defaz'>
+                    <td style="text-align: right;">{{index+1}}</td>
+                    <td>
+                        <p>{{item_def.conclusion}}</p>
+                        <table>
+                            <thead class="thead-default">
+                                <th>Терм</th>
+                                <th style="text-align: center;">Степень истинности</th>
+                                <th style="text-align: center;">Аккумуляция</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for='p in item_def.power'>
+                                    <td v-if='p.type_power == 3'>Высокий</td>
+                                    <td v-if='p.type_power == 2'>Средний</td>
+                                    <td v-if='p.type_power == 1'>Низкий</td>
+                                    <td style="text-align: center;">{{p.stepen_istinnosti}}</td>
+                                    <td style="text-align: center;">{{p.activisatia}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;">Дефаззификация: {{item_def.procent_defazific}}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script type="text/javascript" src="main.js"></script>
+<!--Подключение скриптов бутстрап -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+<script src="js/script.js"></script>
 </body>
 
 </html>

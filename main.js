@@ -15,12 +15,29 @@
             -=права доступа=-
        1 - доступно студентам
        2, 3, 5, 6 - доступно социологу
-       5 - доступно социологу                  
-*/
+       5 - доступно социологу           
+       
+       СТРУКТУРА ПРОГРАММЫ:
+       1 .::. КОММЕНТАРИИ
+       2 .::. API
+       3 .::. МАТЕМАТИКА
+       4 .::. ФУНКЦИИ ДЛЯ РАБОТЫ С БД И СТРУКТУРАМИ ДАННЫХ
+       5 .::. КОРЕНЬ САЙТА ИЛИ ГЛАВНЫЙ КОМПОНЕНТ
 
+       РАЗРАБОТЧИК: Бондаренко Сергей Сергеевич
+       ВЕРСТАЛЬЩИКИ: Алексей, Артем 
+       ДАТА РЕАЛИЗАЦИИ 1й версии: 03:06 28.05.2018
+
+*/
+//                                                  .
+//                                                .:::.
+//                                            .::.  1  .::.
+//                                          .::..::. .::..::.
 /*
 Срочно:
 Сделать более правильный юзер интерфейс для создания и удаления теста
+(но это не недостаток)починить несходство новых id для теста и id у правил 
+выстовить в функцию проверку существования теста
 */
 
 /*
@@ -28,6 +45,8 @@
 1 добавить перезапись UPDATE в анкетировании, или возможность повторного тестирования, при одном и томже прохождении теста
 2 считывание типов пользователей и типов вопросов из бд в лист боксы
 3 не работает clearData из дочернего компонета //143 
+4 //236 строка
+5 восстановить целостность БД после всех копирований
 */
 
 /*
@@ -35,7 +54,10 @@
 1 добавить сверху название теста
 2 добавить сортировку по номеру в конфигураторе и тестировании
 */
-
+//                                                  .
+//                                                .:::.
+//                                            .::.  2  .::.
+//                                          .::..::. .::..::.
 /* ----------
  * ТИПА API К СЕРВЕРУ
  * ----------
@@ -76,6 +98,235 @@ function insertDataInDB(sqlquery){//делает sql INSERT в БД и возв�
     request.send();
     return txt;
 }
+//                                                  .
+//                                                .:::.
+//                                            .::.  3  .::.
+//                                          .::..::. .::..::.
+/* ----------
+ * ЗДЕСЬ ВСЯ МАТЕМАТИКА
+ * ----------
+ */
+/*
+ *VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+ *                 -=ФАЗИФИКАЦИЯ=-
+ * ФУНЦИЯ РАБОТАЕТ НА ФОРМЕ СОЦИОЛОГ И ВЫДАЕТ МАССИВ
+ * ВХОДНЫХ ДАННЫХ + РАСЧЕТНЫЕ
+ *VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+ */
+function rasch_on_sociolog(id_test) {
+    let tmpMas = getDataFromDB("SELECT * FROM rules, questions WHERE questions.id = rules.id_questions  AND questions.id_test = " + id_test);
+    tmpMas.forEach(row => {
+        let percent = -1;
+        let avg = -1;
+
+        let question_id = row["id_questions"];
+        let sql_get_count_answed_on_question = function (id_question) {
+            return `select count(*) from res_testing where id_question = ${id_question}`;
+        }
+        let all_cnt = getDataFromDB(sql_get_count_answed_on_question(question_id))["0"]["count(*)"];
+
+        let type_quest = row["id_type"];
+
+
+
+        let sql_get_count_answed_yes = function (id_question) {
+            return `select count(*) from res_testing where id_question = ${id_question} AND  answer = 1`;
+        }
+        let sql_get_avg_answed_2_to_5 = function (id_question) {
+            return `select  AVG(answer) from res_testing where id_question = ${id_question}`;
+        }
+
+        if (Number(type_quest) == 1) //если это + - то считаем %
+        {
+            let cnt_yes = getDataFromDB(sql_get_count_answed_yes(question_id))["0"]["count(*)"];;
+            percent = (Number(cnt_yes) * 100.0) / Number(all_cnt);
+            row.percent_or_avg = (Math.round(percent * 100) / 100);
+            row.procent = true;
+        }
+        else //если это 2..5 то считаем среднее
+        {
+            avg = getDataFromDB(sql_get_avg_answed_2_to_5(question_id))["0"]["AVG(answer)"];
+            row.percent_or_avg = (Math.round(avg * 100) / 100);
+            row.procent = false;
+        }
+
+        let suhu = row.percent_or_avg;
+        let s_rendah = -1;
+        let s_sedang = -1;
+        let s_tinggi = -1;
+        //низкий
+        if (suhu < row.a) s_rendah = 1;
+        if (suhu >= row.a && suhu <= row.d) s_rendah = (row.d - suhu) / (row.d - row.a);
+        if (suhu > row.a) s_rendah = 0;
+        row.itog_niz = Math.round(s_rendah * 1000) / 1000;
+        // средний
+        if (suhu < row.b) s_sedang = 0;
+        if (suhu >= row.b && suhu <= row.d) s_sedang = (suhu - row.b) / (row.d - row.b);
+        if (suhu >= row.d && suhu <= row.f) s_sedang = 1;
+        if (suhu >= row.f && suhu <= row.h) s_sedang = (row.h - suhu) / (row.h - row.f);
+        if (suhu > row.h) s_sedang = 0;
+        row.itog_sred = Math.round(s_sedang * 1000) / 1000;
+        //высокий 
+        if (suhu < row.e) s_tinggi = 0;
+        if (suhu >= row.e && suhu <= row.h) s_tinggi = (suhu - row.e) / (row.h - row.e);
+        if (suhu > row.h) s_tinggi = 1;
+        row.itog_vys = Math.round(s_tinggi * 1000) / 1000;
+    });
+    return tmpMas;
+}
+/*
+ *VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+ *             -=ВЫВОДЫ+ДЕФАЗИФИКАЦИЯ=-
+ * ФУНЦИЯ РАБОТАЕТ НА ФОРМЕ ДЕФАЗИФИКАЦИЯ И ВЫДАЕТ МАССИВ
+ * ВХОДНЫХ ДАННЫХ + РАСЧЕТНЫЕ
+ *VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+ */
+function rasch_on_defazification(id_test){
+    let defaz = [];//(подзаключение)
+    let sociolog_rasch = rasch_on_sociolog(id_test);
+    let load_rules = get_data_from_CONF_RULES_TABLE(id_test);
+    console.log(sociolog_rasch);
+    console.log(load_rules);
+    //РАСЧЕТ ВЫВОДОВ
+    load_rules.forEach(rule => {
+        let out = {
+            conclusion: rule.conclusion,
+            procent_defazific: -1,
+            power: []
+        }
+        rule.power.forEach(power_row => {
+            //РАСЧЕТ ВЫВОДОВ
+            let A = -1, B = -1, C = -1;//считы с социолога по правилу сред низ выс
+            A = getFromSociologTable_B_i(power_row.id_A, power_row.A_val, sociolog_rasch);
+            B = getFromSociologTable_B_i(power_row.id_B, power_row.B_val, sociolog_rasch);
+            C = getFromSociologTable_B_i(power_row.id_C, power_row.C_val, sociolog_rasch);
+            let stepen_istinnosti = -1;
+            switch (power_row.type_condition) {//Defazing(1)
+                case 1:// A & B & C
+                    stepen_istinnosti = Math.Min(A, Math.Min(B, C));
+                    break;
+                case 2:// A & B || C
+                    stepen_istinnosti = Math.Min(A, Math.Max(B, C));
+                    break;
+                case 3://A || B & C
+                    stepen_istinnosti = Math.Min(Math.Max(A, B), C);
+                    break;
+                case 4://A || B || C
+                    stepen_istinnosti = Math.Max(A, Math.Max(B, C));
+                    break;
+                case 5://A & B
+                    stepen_istinnosti = Math.Min(A, B);
+                    break;
+                case 6://A || B
+                    stepen_istinnosti = Math.Max(A, B);
+                    break;
+                default:
+                    //MessageBox.Show("Данное условие пока не поддерживается Defazing(1)");
+                    break;
+            }
+            out.power.push({
+                type_power: power_row.type_condition,
+                stepen_istinnosti: stepen_istinnosti,
+                activisatia: activisatia = stepen_istinnosti * power_row.kof
+            });
+        }); 
+        //РАСЧЕТ ДЕФАЗИФИКАЦИЯ
+        let akkN = -1, akkS = -1, akkV = -1;
+
+        //ТУТ НУЖНО ИСПРАВИТЬ ОШИБКУ КОГДА НЕ СОВПАДАЕТ НУМЕРАЦИЯ И НИЗ И  СРЕДНИЙ
+        //236
+        akkN = out.power[0].activisatia;
+        akkS = out.power[1].activisatia;
+        akkV = out.power[2].activisatia;
+
+        let def = (((rule.a + rule.c) * akkN) + ((rule.b + rule.d + rule.f + rule.g) * akkS) + ((rule.e + rule.h) * akkV)) / ((akkN * 2) + (akkS * 4) + (akkV * 2));
+
+        if ((akkN * 2 + akkS * 4 + akkS * 2) == 0) {
+            //MessageBox.Show("Не число /0");
+        }
+        out.procent_defazific = def;
+        defaz.push(out);
+    });
+    return defaz;
+}
+
+function getFromSociologTable_B_i(i/*Номер вопроса(строки)*/, j/*выбор из {низкий|средний|высокий} кофициент (столбец)*/, soc) {
+    //берет данные о расчитанном значении Bi с формы Социолога
+    let Bi = -1;
+    soc.forEach(soc_row => {
+        if(soc_row.id == i){
+            if (j == 1) Bi = soc_row.itog_niz;//низкий
+            else if (j == 2) Bi = soc_row.itog_sred;//средний
+            else if (j == 3) Bi = soc_row.itog_vys;//высокий
+        }
+    });
+    return Bi;
+}
+//                                                  .
+//                                                .:::.
+//                                            .::.  4  .::.
+//                                          .::..::. .::..::.
+/* --------------------------------------------------
+ * УДОБНОСТИ ДЛЯ ЛОГИКИ И ОБРАЩЕНИЯМ К БД
+ * --------------------------------------------------
+ */
+/*
+ *VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+ *             -=ВЫВОДЫ+ДЕФАЗИФИКАЦИЯ=-
+ * ФУНЦИЯ РАБОТАЕТ НА ФОРМЕ ДЕФАЗИФИКАЦИЯ И ВЫДАЕТ МАССИВ
+ * ВХОДНЫХ ДАННЫХ + РАСЧЕТНЫЕ
+ *VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+ */
+function get_data_from_CONF_RULES_TABLE(id_test) {
+    let rules = [];
+    let tmp = getDataFromDB(`SELECT * FROM conf_rules WHERE id_test = ${id_test} ORDER BY num_rule`);
+    for (let i = 0; i < tmp.length - 1; i += 3) {
+        let high = tmp[i];
+        let medium = tmp[i + 1];
+        let low = tmp[i + 2];
+        let out = {
+            num: high.num_rule,
+            conclusion: high.conclusion,
+            a: high.a, b: high.b, c: high.c, d: high.d,
+            e: high.e, f: high.f, g: high.g, h: high.h,
+            power: [
+                {
+                    type_kof: high.type_kof,
+                    id: high.id,
+                    kof: high.kof,
+                    type_condition: high.type_kof,
+                    id_A: high.id_A, A_val: high.id_A_val,
+                    id_B: high.id_B, B_val: high.id_B_val,
+                    id_C: high.id_C, C_val: high.id_C_val
+                },
+                {
+                    type_kof: medium.type_kof,
+                    id: medium.id,
+                    kof: medium.kof,
+                    type_condition: medium.type_kof,
+                    id_A: medium.id_A, A_val: medium.id_A_val,
+                    id_B: medium.id_B, B_val: medium.id_B_val,
+                    id_C: medium.id_C, C_val: medium.id_C_val
+                },
+                {
+                    type_kof: low.type_kof,
+                    id: low.id,
+                    kof: low.kof,
+                    type_condition: low.type_kof,
+                    id_A: low.id_A, A_val: low.id_A_val,
+                    id_B: low.id_B, B_val: low.id_B_val,
+                    id_C: low.id_C, C_val: low.id_C_val
+                }
+            ]
+        }
+        rules.push(out);
+    }
+    return rules;
+}
+//                                                  .
+//                                                .:::.
+//                                            .::.  5  .::.
+//                                          .::..::. .::..::.
 /* ----------
  * SPA НА VUE
  * ----------
@@ -92,7 +343,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
 
         txt: 0,//вроде нигде больше не юзал, кроме проверки JSON
 
-        curentView: 'MainMenu'//'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
+        curentView: 'Defazification'//'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
     },
     methods: {
         SwitchView: function (view) {//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
@@ -156,50 +407,9 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
                     this.panel = 1;
 
-                    this.rules = [];
-                    this.numPagination = -1;
-                    let tmp = getDataFromDB(`SELECT * FROM conf_rules WHERE id_test = ${this.id_test} ORDER BY num_rule`);
-                    for (let i = 0; i < tmp.length - 1; i += 3) {
-                        let high = tmp[i];
-                        let medium = tmp[i + 1];
-                        let low = tmp[i + 2];
-                        let out = {
-                            num: high.num_rule,
-                            conclusion: high.conclusion,
-                            a: high.a, b: high.b, c: high.c, d: high.d,
-                            e: high.e, f: high.f, g: high.g, h: high.h,
-                            power: [
-                                {
-                                    type_kof: high.type_kof,
-                                    id: high.id,
-                                    kof: high.kof,
-                                    type_condition: high.type_kof,
-                                    id_A: high.id_A, A_val: high.id_A_val,
-                                    id_B: high.id_B, B_val: high.id_B_val,
-                                    id_C: high.id_C, C_val: high.id_C_val
-                                },
-                                {
-                                    type_kof: medium.type_kof,
-                                    id: medium.id,
-                                    kof: medium.kof,
-                                    type_condition: medium.type_kof,
-                                    id_A: medium.id_A, A_val: medium.id_A_val,
-                                    id_B: medium.id_B, B_val: medium.id_B_val,
-                                    id_C: medium.id_C, C_val: medium.id_C_val
-                                },
-                                {
-                                    type_kof: low.type_kof,
-                                    id: low.id,
-                                    kof: low.kof,
-                                    type_condition: low.type_kof,
-                                    id_A: low.id_A, A_val: low.id_A_val,
-                                    id_B: low.id_B, B_val: low.id_B_val,
-                                    id_C: low.id_C, C_val: low.id_C_val
-                                }
-                            ]
-                        }
-                        this.rules.push(out);
-                    }
+                    this.rules = get_data_from_CONF_RULES_TABLE(this.id_test);
+                    this.numPagination = 0;
+                    
                     this.listPage(0);
                 },
                 openOtherRules: function () {
@@ -414,68 +624,8 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                             alert("Такого теста не существует, выберите другой тест");
                             return;
                         }
-                        
 
-                        let tmpMas = getDataFromDB("SELECT * FROM rules, questions WHERE questions.id = rules.id_questions  AND questions.id_test = " + this.id_test);
-                        tmpMas.forEach(row => {
-                            let percent = -1;
-                            let avg = -1;
-
-                            let question_id = row["id_questions"];
-                            let sql_get_count_answed_on_question = function(id_question){
-                                return `select count(*) from res_testing where id_question = ${id_question}`;
-                            }
-                            let all_cnt = getDataFromDB(sql_get_count_answed_on_question(question_id))["0"]["count(*)"];
-                        
-                            let type_quest = row["id_type"];
-                        
-                            
-
-                            let sql_get_count_answed_yes = function(id_question){
-                                return `select count(*) from res_testing where id_question = ${id_question} AND  answer = 1`;
-                            }
-                            let sql_get_avg_answed_2_to_5 = function(id_question){
-                                return `select  AVG(answer) from res_testing where id_question = ${id_question}`;
-                            }
-            
-                            if (Number(type_quest) == 1) //если это + - то считаем %
-                            {
-                                let cnt_yes = getDataFromDB(sql_get_count_answed_yes(question_id))["0"]["count(*)"];;
-                                percent = (Number(cnt_yes) * 100.0) / Number(all_cnt);
-                                row.percent_or_avg = (Math.round(percent * 100) / 100);
-                                row.procent = true;
-                            }
-                            else //если это 2..5 то считаем среднее
-                            {
-                                avg = getDataFromDB(sql_get_avg_answed_2_to_5(question_id))["0"]["AVG(answer)"];
-                                row.percent_or_avg = (Math.round(avg * 100) / 100);
-                                row.procent = false;
-                            }
-                        
-                            let suhu = row.percent_or_avg;
-                            let s_rendah = -1;
-                            let s_sedang = -1;
-                            let s_tinggi = -1;
-                            //низкий
-                            if (suhu < row.a) s_rendah = 1;
-                            if (suhu >= row.a && suhu <= row.d) s_rendah = (row.d - suhu) / (row.d - row.a);
-                            if (suhu > row.a) s_rendah = 0;
-                            row.itog_niz = Math.round(s_rendah * 1000) / 1000;
-                            // средний
-                            if (suhu < row.b) s_sedang = 0;
-                            if (suhu >= row.b && suhu <= row.d) s_sedang = (suhu - row.b) / (row.d - row.b);
-                            if (suhu >= row.d && suhu <= row.f) s_sedang = 1;
-                            if (suhu >= row.f && suhu <= row.h) s_sedang = (row.h - suhu) / (row.h - row.f);
-                            if (suhu > row.h) s_sedang = 0;
-                            row.itog_sred = Math.round(s_sedang * 1000) / 1000;
-                            //высокий 
-                            if (suhu < row.e) s_tinggi = 0;
-                            if (suhu >= row.e && suhu <= row.h) s_tinggi = (suhu - row.e) / (row.h - row.e);
-                            if (suhu > row.h) s_tinggi = 1;
-                            row.itog_vys = Math.round(s_tinggi * 1000) / 1000;
-
-                        });
-                        this.fazification = tmpMas;
+                        this.fazification = rasch_on_sociolog(this.id_test);
                         this.panel = 1;
                     },
                     openOther: function(){
@@ -487,6 +637,39 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                         this.$emit("exit", "MainMenu");
                     }
                 }
+        },
+        /*
+        *******************
+        *  ДЕФАЗИФИКАЦИЯ
+        *******************
+        */
+        'Defazification': {
+            template: '#defazification-tmp',
+            data: function(){
+                return {
+                    panel: 0,
+                    id_test: '',
+                    defaz: []
+                }
+            },
+            methods: {
+                loadVars: function(){
+                    if (this.id_test == '') return;
+                    let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
+                    if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
+                    this.defaz = rasch_on_defazification(this.id_test);
+                    console.log(this.defaz);
+                    this.panel = 1;
+                },
+                openOther: function(){
+                    this.defaz = [];
+                    this.id_test = '';
+                    this.panel = 0;
+                },
+                exit: function () {
+                    this.$emit('exit', 'MainMenu');
+                }
+            }
         }
     }
 });
@@ -608,21 +791,3 @@ Vue.component('KonfTest', {
 	},
 	template: '#KonfTest-tmp'
 })
-//считать с БД
-Vue.component('authorizationRead',{
-    data: function() {
-        return{
-             respons_db: []
-        }
-    },
-    methods:{
-		exit: function(){
-			this.$emit('exit','MainMenu');
-        },
-        load: function(){
-            this.respons_db = getDataFromDB('SELECT * FROM authorization')
-        }
-	},
-	template: '#authorizationRead-tmp'
-})
-
