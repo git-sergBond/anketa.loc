@@ -185,8 +185,6 @@ function rasch_on_defazification(id_test){
     let defaz = [];//(подзаключение)
     let sociolog_rasch = rasch_on_sociolog(id_test);
     let load_rules = get_data_from_CONF_RULES_TABLE(id_test);
-    console.log(sociolog_rasch);
-    console.log(load_rules);
     //РАСЧЕТ ВЫВОДОВ
     load_rules.forEach(rule => {
         let out = {
@@ -197,37 +195,42 @@ function rasch_on_defazification(id_test){
         rule.power.forEach(power_row => {
             //РАСЧЕТ ВЫВОДОВ
             let A = -1, B = -1, C = -1;//считы с социолога по правилу сред низ выс
-            A = getFromSociologTable_B_i(power_row.id_A, power_row.A_val, sociolog_rasch);
-            B = getFromSociologTable_B_i(power_row.id_B, power_row.B_val, sociolog_rasch);
-            C = getFromSociologTable_B_i(power_row.id_C, power_row.C_val, sociolog_rasch);
+            A = getFromSociologTable_B_i(Number(power_row.id_A), Number(power_row.A_val), sociolog_rasch);
+            B = getFromSociologTable_B_i(Number(power_row.id_B), Number(power_row.B_val), sociolog_rasch);
+            C = getFromSociologTable_B_i(Number(power_row.id_C), Number(power_row.C_val), sociolog_rasch);
+           
             let stepen_istinnosti = -1;
-            switch (power_row.type_condition) {//Defazing(1)
+            let activisatia = -1;
+            console.log(power_row);
+            switch (Number(power_row.type_condition)) {//Defazing(1)
                 case 1:// A & B & C
-                    stepen_istinnosti = Math.Min(A, Math.Min(B, C));
+                    stepen_istinnosti = Math.min(A, Math.min(B, C));
                     break;
                 case 2:// A & B || C
-                    stepen_istinnosti = Math.Min(A, Math.Max(B, C));
+                    stepen_istinnosti = Math.min(A, Math.max(B, C));
                     break;
                 case 3://A || B & C
-                    stepen_istinnosti = Math.Min(Math.Max(A, B), C);
+                    stepen_istinnosti = Math.min(Math.max(A, B), C);
                     break;
                 case 4://A || B || C
-                    stepen_istinnosti = Math.Max(A, Math.Max(B, C));
+                    stepen_istinnosti = Math.max(A, Math.max(B, C));
                     break;
                 case 5://A & B
-                    stepen_istinnosti = Math.Min(A, B);
+                    stepen_istinnosti = Math.min(A, B);
                     break;
                 case 6://A || B
-                    stepen_istinnosti = Math.Max(A, B);
+                    stepen_istinnosti = Math.max(A, B);
                     break;
                 default:
                     //MessageBox.Show("Данное условие пока не поддерживается Defazing(1)");
                     break;
-            }
+            } 
+            console.log(`${stepen_istinnosti} ${activisatia} ${A} ${B} ${C}`);
+            activisatia  = stepen_istinnosti * power_row.kof;
             out.power.push({
                 type_power: power_row.type_condition,
                 stepen_istinnosti: stepen_istinnosti,
-                activisatia: activisatia = stepen_istinnosti * power_row.kof
+                activisatia: activisatia
             });
         }); 
         //РАСЧЕТ ДЕФАЗИФИКАЦИЯ
@@ -235,16 +238,16 @@ function rasch_on_defazification(id_test){
 
         //ТУТ НУЖНО ИСПРАВИТЬ ОШИБКУ КОГДА НЕ СОВПАДАЕТ НУМЕРАЦИЯ И НИЗ И  СРЕДНИЙ
         //236
-        akkN = out.power[0].activisatia;
-        akkS = out.power[1].activisatia;
-        akkV = out.power[2].activisatia;
+        akkN = Number(out.power[0].activisatia);
+        akkS = Number(out.power[1].activisatia);
+        akkV = Number(out.power[2].activisatia);
 
-        let def = (((rule.a + rule.c) * akkN) + ((rule.b + rule.d + rule.f + rule.g) * akkS) + ((rule.e + rule.h) * akkV)) / ((akkN * 2) + (akkS * 4) + (akkV * 2));
+        let def = (((Number(rule.a) + Number(rule.c)  ) * akkN) + ((Number(rule.b) + Number(rule.d) + Number(rule.f) + Number(rule.g)  ) * akkS  ) + ((Number(rule.e) +  Number(rule.h)) * akkV)) / ((akkN * 2) + (akkS * 4) + (akkV * 2));
 
         if ((akkN * 2 + akkS * 4 + akkS * 2) == 0) {
             //MessageBox.Show("Не число /0");
         }
-        out.procent_defazific = def;
+        out.procent_defazific = Math.round(def*1000)/1000;
         defaz.push(out);
     });
     return defaz;
@@ -260,6 +263,7 @@ function getFromSociologTable_B_i(i/*Номер вопроса(строки)*/, 
             else if (j == 3) Bi = soc_row.itog_vys;//высокий
         }
     });
+    //console.log(`${i} - ${j} = ${Bi}`);
     return Bi;
 }
 //                                                  .
@@ -649,7 +653,8 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 return {
                     panel: 0,
                     id_test: '',
-                    defaz: []
+                    defaz: [],
+                    debug: []
                 }
             },
             methods: {
