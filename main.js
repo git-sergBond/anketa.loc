@@ -201,7 +201,6 @@ function rasch_on_defazification(id_test){
            
             let stepen_istinnosti = -1;
             let activisatia = -1;
-            console.log(power_row);
             switch (Number(power_row.type_condition)) {//Defazing(1)
                 case 1:// A & B & C
                     stepen_istinnosti = Math.min(A, Math.min(B, C));
@@ -225,7 +224,6 @@ function rasch_on_defazification(id_test){
                     //MessageBox.Show("Данное условие пока не поддерживается Defazing(1)");
                     break;
             } 
-            console.log(`${stepen_istinnosti} ${activisatia} ${A} ${B} ${C}`);
             activisatia  = stepen_istinnosti * power_row.kof;
             out.power.push({
                 type_power: power_row.type_condition,
@@ -347,7 +345,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
 
         txt: 0,//вроде нигде больше не юзал, кроме проверки JSON
 
-        curentView: 'Defazification'//'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
+        curentView: 'MainMenu'//МЕНЯЕТСЯ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
     },
     methods: {
         SwitchView: function (view) {//МЕНЯЕТ ПРЕДСТВЛЕНИЕ (СОСТОЯНИЕ)
@@ -663,7 +661,6 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     let isValidTest = getDataFromDB(`SELECT count(*) FROM tests WHERE id=${this.id_test}`);
                     if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
                     this.defaz = rasch_on_defazification(this.id_test);
-                    console.log(this.defaz);
                     this.panel = 1;
                 },
                 openOther: function(){

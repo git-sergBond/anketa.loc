@@ -208,7 +208,7 @@
                             </label>
                         </div>
                         <div v-if='question.id_type==2' class="col-lg-4">
-                            <input v-model='question.val' type="range" min="2" max="5" step="1" value="5"></input> {{question.val}}
+                            <input v-model='question.val' type="range" min="2" max="5" step="0.01" value="5"></input> {{question.val}}
                         </div>
                     </div>
                 </div>
@@ -350,35 +350,35 @@
             </div>
             <div style="flex: 0; display: flex; justify-content: space-around; margin: 1.5em; clear: right">
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">A:</label>
+                    <label style="margin-right: 1em">a:</label>
                     <input v-model='curRule.a' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">B:</label>
+                    <label style="margin-right: 1em">b:</label>
                     <input v-model='curRule.b' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">C:</label>
+                    <label style="margin-right: 1em">c:</label>
                     <input v-model='curRule.c' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">D:</label>
+                    <label style="margin-right: 1em">d:</label>
                     <input v-model='curRule.d' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">E:</label>
+                    <label style="margin-right: 1em">e:</label>
                     <input v-model='curRule.e' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">F:</label>
+                    <label style="margin-right: 1em">f:</label>
                     <input v-model='curRule.f' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">G:</label>
+                    <label style="margin-right: 1em">g:</label>
                     <input v-model='curRule.g' class="form-control" type="text" size="3">
                 </div>
                 <div style="display: flex; justify-content: flex-start; align-items: flex-start">
-                    <label style="margin-right: 1em">H:</label>
+                    <label style="margin-right: 1em">h:</label>
                     <input v-model='curRule.h' class="form-control" type="text" size="3">
                 </div>
             </div>
@@ -546,7 +546,7 @@
                 <tr>
                     <th>№</th>
                     <th>Вопрос</th>
-                    <th>%|Средний</th>
+                    <th>%|AVG</th>
                     <th>Низкий</th>
                     <th>Средний</th>
                     <th>Высокий</th>
