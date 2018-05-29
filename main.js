@@ -545,7 +545,8 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     props: ['powerprop', 'idtestprop'],
                     data: function () {
                         return {
-                            lingvoVars: getDataFromDB('SELECT id, name FROM rules WHERE id_tests = ' + this.idtestprop),
+                            lingvoVars: getDataFromDB('SELECT rules.id, question FROM rules, questions WHERE id_tests = '+this.idtestprop+' AND  id_questions = questions.id'),
+                            
                             power: [{ id: 1, name: 'Низкий' }, { id: 2, name: 'Средний' }, { id: 3, name: 'Высокий' }],
                             condition: [{ id: 1, name: 'A & B & C' }, { id: 2, name: 'A & (B || C)' }, { id: 3, name: '(A & B) || C' }, { id: 4, name: 'A || B || C' }, { id: 5, name: 'A & B' }, { id: 6, name: 'A || B' }]
                         }
@@ -567,7 +568,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                 return {
                     id_test: '',
                     panel: 0,
-                    rules: []
+                    rules: [],
                 }
             },
             methods: {
@@ -577,7 +578,7 @@ var mainComponent = new Vue({//ГЛАВНЫЙ компонент - ГЛАВНО�
                     if (isValidTest["0"]["count(*)"] == 0) { alert('Такого теста не существует, выберите другой тест'); return; }
                     this.panel = 1;
                     this.rules = [];
-                    this.rules = getDataFromDB(`SELECT * FROM rules WHERE id_tests = ${this.id_test}`);
+                    this.rules = getDataFromDB(`SELECT * FROM rules, questions WHERE id_tests = ${this.id_test} AND  id_questions = questions.id`);
                 }, 
                 save: function(){
                     let sql_update = function(id,name,a,b,c,d,e,f,g,h){

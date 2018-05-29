@@ -422,7 +422,7 @@
         <div class="d-flex justify-content-center" style="clear: left;">
             <label style="margin-right: 1em">A</label>
             <select v-model='powerprop.id_A' style="flex: 1" class="form-control">
-                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.question }}</option>
             </select>
             <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
             <select v-model='powerprop.A_val' style="flex: 0.2" class="form-control">
@@ -432,7 +432,7 @@
         <div class="d-flex justify-content-center" style="clear: left;">
             <label style="margin-right: 1em">B</label>
             <select v-model='powerprop.id_B' style="flex: 1" class="form-control">
-                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.question }}</option>
             </select>
             <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
             <select v-model='powerprop.B_val' style="flex: 0.2" class="form-control">
@@ -442,7 +442,7 @@
         <div class="d-flex justify-content-center" style="clear: left;">
             <label style="margin-right: 1em">C</label>
             <select v-model='powerprop.id_C' style="flex: 1" class="form-control">
-                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.name }}</option>
+                <option v-for='lingvoVar in lingvoVars' :value='lingvoVar.id'>{{ lingvoVar.question }}</option>
             </select>
             <label style="margin-right: 0.5em;margin-left: 0.5em"> = </label>
             <select v-model='powerprop.C_val' style="flex: 0.2" class="form-control">
@@ -499,7 +499,7 @@
                 <tbody>
                     <tr v-for='(item, index) in rules'>
                         <th scope="row">{{index+1}}</th>
-                        <td width=40%><input v-model='item.name' class='form-control'></td>
+                        <td width=40%><p>{{item.question}}</p></td>
                         <td><input v-model='item.a' class='form-control' type='number'></td>
                         <td><input v-model='item.b' class='form-control' type='number'></td>
                         <td><input v-model='item.c' class='form-control' type='number'></td>
